@@ -3,7 +3,6 @@
 #include "ServiceControl.h"
 #include "ControlWorkerThread.h"
 #include "ExtendedFrame.h"
-#include "DefEvent.h"
 #include <wx\\collpane.h>
 #include <wx\\stattext.h>
 #include <map>

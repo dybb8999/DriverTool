@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ExtendedFrame.h"
 #include <map>
-#include "DefEvent.h"
 #include "DriverToolFrame.h"
 #include <Windows.h>
 

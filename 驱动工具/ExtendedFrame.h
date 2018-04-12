@@ -1,7 +1,6 @@
 #pragma once
 
 #include "wx\\notebook.h"
-#include "DefEvent.h"
 
 enum 
 {

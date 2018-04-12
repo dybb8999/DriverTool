@@ -170,7 +170,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ControlWorkerThread.h" />
-    <ClInclude Include="DefEvent.h" />
     <ClInclude Include="DriverToolFrame.h" />
     <ClInclude Include="ExtendedFrame.h" />
     <ClInclude Include="MyApp.h" />
@@ -181,7 +180,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ControlWorkerThread.cpp" />
-    <ClCompile Include="DefEvent.cpp" />
     <ClCompile Include="DriverToolFrame.cpp" />
     <ClCompile Include="ExtendedFrame.cpp" />
     <ClCompile Include="MyApp.cpp" />
