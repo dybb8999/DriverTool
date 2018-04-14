@@ -171,7 +171,6 @@
   <ItemGroup>
     <ClInclude Include="ControlWorkerThread.h" />
     <ClInclude Include="DriverToolFrame.h" />
-    <ClInclude Include="ExtendedFrame.h" />
     <ClInclude Include="MyApp.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ServiceControl.h" />
@@ -181,7 +180,6 @@
   <ItemGroup>
     <ClCompile Include="ControlWorkerThread.cpp" />
     <ClCompile Include="DriverToolFrame.cpp" />
-    <ClCompile Include="ExtendedFrame.cpp" />
     <ClCompile Include="MyApp.cpp" />
     <ClCompile Include="ServiceControl.cpp" />
     <ClCompile Include="stdafx.cpp">

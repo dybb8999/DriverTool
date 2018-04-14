@@ -39,9 +39,6 @@
     <ClInclude Include="ControlWorkerThread.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ExtendedFrame.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -57,9 +54,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ControlWorkerThread.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ExtendedFrame.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -13,7 +13,13 @@ enum
 	ID_EDT_SHOW,
 	ID_BTN_MORE,
 	ID_GAUGE,
-	ID_EXTEND_FRAME
+	ID_EXTEND_FRAME,
+	//CollapsiblePane
+	ID_COLLAPSIBLEPANE,
+	ID_NOTEBOOK,
+	ID_RADIOBOX_PAGE1,
+	ID_RADIOBEGIN,
+	ID_RADIOEND = ID_RADIOBEGIN + 50
 };
 
 enum ServiceControlCode
@@ -24,7 +30,7 @@ enum ServiceControlCode
 	UNINSTALL
 };
 
-class CExtendedFrame;
+//class CExtendedFrame;
 
 class CDriverToolFrame :
 	public wxFrame
@@ -65,7 +71,9 @@ private:
 	wxButton* m_pBtnMore;
 	wxGauge* m_pGauge;
 
-	CExtendedFrame* m_pExtendFrame;
+	//CExtendedFrame* m_pExtendFrame;
+
+	wxBoxSizer* m_pCollapsibleSizer;
 	wxCollapsiblePane* m_pExtendPanel;
 	//ExtendPanel
 	wxBoxSizer *m_pExtenPanelMainBoxSizer;
@@ -79,6 +87,8 @@ private:
 	wxCheckBox **m_ppCheckBoxArray;
 
 	wxPanel *m_pExtSecondPanel;
+
+	wxString m_szServiceName;
 private:
 	void OnSelectFile(wxCommandEvent &event);
 	void OnInstall(wxCommandEvent &event);
@@ -87,16 +97,19 @@ private:
 	void OnUnInstall(wxCommandEvent &event);
 	void OnWindowTop(wxCommandEvent &event);
 	void OnWindowMove(wxMoveEvent &event);
-	void OnShowExtendFrame(wxCommandEvent &event);
+	//void OnShowExtendFrame(wxCommandEvent &event);
+	void OnStartChange(wxCommandEvent & event);
+	void OnFilterDriverNotify(wxCommandEvent & event);
 
 	void DisableAllButton();
 	void EnableAllButton();
 	void OnServiceControlComplete(wxThreadEvent& event);
 	void OnDropFile(wxDropFilesEvent& event);
-
+	void OnCollapsiblePaneExpand(wxCollapsiblePaneEvent& event);
 private:
 	void InitCollapsiblePane();
 	void InitWDMFilterData();
+	void UpdateDriverInfo();
 private:
 	wxDECLARE_EVENT_TABLE();
 };
