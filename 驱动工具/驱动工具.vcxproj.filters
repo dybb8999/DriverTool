@@ -39,6 +39,9 @@
     <ClInclude Include="ControlWorkerThread.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="IoctlEdtControl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -56,6 +59,9 @@
     <ClCompile Include="ControlWorkerThread.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="IoctlEdtControl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="驱动工具.rc">
@@ -66,8 +72,17 @@
     <Image Include="sample.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="IoctlLayout.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="sample.xpm" />
+    <None Include="image1.bin">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="image2.bin">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
 </Project>

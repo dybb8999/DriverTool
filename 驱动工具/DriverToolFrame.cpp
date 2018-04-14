@@ -2,10 +2,14 @@
 #include "DriverToolFrame.h"
 #include "ServiceControl.h"
 #include "ControlWorkerThread.h"
-//#include "ExtendedFrame.h"
-#include <wx\\collpane.h>
-#include <wx\\stattext.h>
+#include "resource.h"
+#include <wx/collpane.h>
+#include <wx/stattext.h>
 #include <map>
+#include <Windows.h>
+#include <cassert>
+#include <wx/fontutil.h>
+#include "IoctlEdtControl.h"
 
 wxDEFINE_EVENT(wxEVT_MY_CUSTOM_COMMAND, wxCommandEvent);
 
@@ -77,7 +81,9 @@ wxBEGIN_EVENT_TABLE(CDriverToolFrame, wxFrame)
 	EVT_CHECKBOX(ID_RADIOBEGIN + 49, OnFilterDriverNotify)
 	EVT_CHECKBOX(ID_RADIOBEGIN + 50, OnFilterDriverNotify)
 
-	//
+	//Second Panel
+	EVT_TEXT(ID_EDTSHOWIOCTL, OnIoctlCodeChange)
+
 wxEND_EVENT_TABLE()
 
 std::map<wxString, wxString> g_GUIDMap;
@@ -203,10 +209,10 @@ void CDriverToolFrame::OnSelectFile(wxCommandEvent & event)
 
 void CDriverToolFrame::OnInstall(wxCommandEvent & event)
 {
-	wxString szFile = m_pEdtDriverPath->GetLabelText();
+	wxString szFile = m_pEdtDriverPath->GetValue();
 	do 
 	{
-		if (szFile == "")
+		if (szFile == wxT(""))
 		{
 			m_pEdtShow->SetLabelText(wxT("请选择文件"));
 			break;
@@ -659,57 +665,264 @@ void CDriverToolFrame::OnCollapsiblePaneExpand(wxCollapsiblePaneEvent & event)
 	} while (0);
 }
 
+void CDriverToolFrame::OnIoctlCodeChange(wxCommandEvent & event)
+{
+	wxString strCode;
+	strCode = m_pEdtShowIoctlCode->GetValue();
+	auto pCheckCode = [&]()->bool
+	{
+		bool bRet = false;
+		do 
+		{
+			if (strCode.length() < 8)
+			{
+				break;
+			}
+
+			if (strCode.length() > 10)
+			{
+				break;
+			}
+
+			wxString strNewCode;
+			size_t pos = strCode.rfind(wxT('x'));
+			if (pos != wxString::npos)
+			{
+				strNewCode = wxString(strCode, pos + 1, strCode.Length() - pos - 1);
+			}
+			else
+			{
+				strNewCode = strCode;
+			}
+
+			if (strNewCode.length() != 8)
+			{
+				break;
+			}
+
+			bool bCodeCheck = true;
+			for (auto a : strNewCode)
+			{
+				if (a >= wxT('0') && a <= wxT('9'))
+				{
+					continue;
+				}
+				else if (a >= wxT('a') && a <= wxT('f'))
+				{
+					continue;
+				}
+				else if (a >= wxT('A') && a <= wxT('F'))
+				{
+					continue;
+				}
+				else
+				{
+					bCodeCheck = false;
+					break;
+				}
+			}
+
+			if (bCodeCheck == false)
+			{
+				break;
+			}
+			
+			bRet = true;
+		} while (0);
+		
+		return bRet;
+	};
+
+	IOCTL_INFO ioctlInfo = { 0 };
+	do 
+	{
+		if (pCheckCode() == false)
+		{
+			break;
+		}
+
+		TCHAR *p = nullptr;
+		ioctlInfo.ulData = _tcstol(strCode.c_str(), &p, 16);
+	} while (0);
+
+	UpdateIoctlInfo(ioctlInfo);
+}
+
 void CDriverToolFrame::InitCollapsiblePane()
 {
 	m_pCollapsibleSizer = new wxBoxSizer(wxVERTICAL);
 	
 	wxWindow *pMainPanel;
 	m_pExtendPanel = new wxCollapsiblePane(this, ID_COLLAPSIBLEPANE, wxT("更多"));
+	m_pExtendPanel->SetBackgroundColour(wxColor(255, 255, 255));
+
 	pMainPanel = m_pExtendPanel->GetPane();
 	m_pCollapsibleSizer->Add(m_pExtendPanel, 0, wxGROW | wxALL, 5);
 
 	m_pExtenPanelMainBoxSizer = new wxBoxSizer(wxVERTICAL);
-	m_pExtBoxSize1 = new wxBoxSizer(wxVERTICAL);
-	//wxStaticText* pStatic = new wxStaticText(pMainPanel, wxID_ANY, wxT("Test"));
-	//m_pExtBoxSize1->Add(pStatic);
-	//pMainPanel->SetSizer(m_pExtBoxSize1);
-	//m_pExtBoxSize1->SetSizeHints(pMainPanel);
-	
 	m_pNotebook = new wxNotebook(pMainPanel, ID_NOTEBOOK);
-	
-	//Panel 1
-	wxArrayString strRadioBoxs;
-	strRadioBoxs.Add(wxT("BOOT_START"));
-	strRadioBoxs.Add(wxT("SYSTEM_START"));
-	strRadioBoxs.Add(wxT("AUTO_START"));
-	strRadioBoxs.Add(wxT("DEMAND_START"));
-	strRadioBoxs.Add(wxT("DISABLED"));
 
-	m_pFirstPanel = new wxPanel(m_pNotebook);
-	m_pNotebook->AddPage(m_pFirstPanel, wxT("详细设置"), true);
-
-	m_pRadioBoxStartOption = new wxRadioBox(m_pFirstPanel, ID_RADIOBOX_PAGE1, wxT("启动方式"), wxDefaultPosition, wxDefaultSize, strRadioBoxs, 0, wxRA_SPECIFY_COLS);
-	//m_pRadioBoxStartOption->SetSelection(3);
-	m_pExtBoxSize1->Add(m_pRadioBoxStartOption, 0, wxALL | wxEXPAND, 5);
-
-	m_pBottomStaticBoxSizer = new wxStaticBoxSizer(wxVERTICAL, m_pFirstPanel, wxT("附加设备(非WDM驱动勿选)"));
-	m_pCheckBoxSizer = new wxGridSizer(0, 5, 0, 0);
-	m_pBottomStaticBoxSizer->Add(m_pCheckBoxSizer, 1, wxALL | wxEXPAND, 5);
-	m_pExtBoxSize1->Add(m_pBottomStaticBoxSizer, 1, wxALL | wxEXPAND, 5);
-
-	m_ppCheckBoxArray = new wxCheckBox*[g_GUIDMap.size()];
-	auto iter = g_GUIDMap.cbegin();
-	for (int index = 0; iter != g_GUIDMap.cend(); ++iter, ++index)
+	auto InitlizeFirstPanel = [&] 
 	{
-		m_ppCheckBoxArray[index] = new wxCheckBox(m_pFirstPanel, ID_RADIOBEGIN + index, iter->first);
-		m_pCheckBoxSizer->Add(m_ppCheckBoxArray[index]);
-	}
+		//Panel 1
+		m_pExtBoxSize1 = new wxBoxSizer(wxVERTICAL);
+		wxArrayString strRadioBoxs;
+		strRadioBoxs.Add(wxT("BOOT_START"));
+		strRadioBoxs.Add(wxT("SYSTEM_START"));
+		strRadioBoxs.Add(wxT("AUTO_START"));
+		strRadioBoxs.Add(wxT("DEMAND_START"));
+		strRadioBoxs.Add(wxT("DISABLED"));
 
-	//Panel 2
-	m_pExtSecondPanel = new wxPanel(m_pNotebook);
-	m_pNotebook->AddPage(m_pExtSecondPanel, wxT("其他"));
+		m_pFirstPanel = new wxPanel(m_pNotebook);
+		m_pNotebook->AddPage(m_pFirstPanel, wxT("详细设置"), true);
+
+		m_pRadioBoxStartOption = new wxRadioBox(m_pFirstPanel, ID_RADIOBOX_PAGE1, wxT("启动方式"), wxDefaultPosition, wxDefaultSize, strRadioBoxs, 0, wxRA_SPECIFY_COLS);
+		m_pRadioBoxStartOption->SetSelection(3);
+		m_pExtBoxSize1->Add(m_pRadioBoxStartOption, 0, wxALL | wxEXPAND, 5);
+
+		m_pBottomStaticBoxSizer = new wxStaticBoxSizer(wxVERTICAL, m_pFirstPanel, wxT("附加设备(非WDM驱动勿选)"));
+		m_pCheckBoxSizer = new wxGridSizer(0, 5, 0, 0);
+		m_pBottomStaticBoxSizer->Add(m_pCheckBoxSizer, 1, wxALL | wxEXPAND, 5);
+		m_pExtBoxSize1->Add(m_pBottomStaticBoxSizer, 1, wxALL | wxEXPAND, 5);
+
+		m_ppCheckBoxArray = new wxCheckBox*[g_GUIDMap.size()];
+		auto iter = g_GUIDMap.cbegin();
+		for (int index = 0; iter != g_GUIDMap.cend(); ++iter, ++index)
+		{
+			m_ppCheckBoxArray[index] = new wxCheckBox(m_pFirstPanel, ID_RADIOBEGIN + index, iter->first);
+			m_pCheckBoxSizer->Add(m_ppCheckBoxArray[index]);
+		}
+
+		m_pFirstPanel->SetSizer(m_pExtBoxSize1);
+	};
+	InitlizeFirstPanel();
 	
-	m_pFirstPanel->SetSizer(m_pExtBoxSize1);
+	//Panel 2
+	auto InitlizeSecondPanel = [&]
+	{
+		m_pExtSecondPanel = new wxPanel(m_pNotebook);
+		m_pNotebook->AddPage(m_pExtSecondPanel, wxT("IOCTL"));
+
+		m_pExtBoxSize2 = new wxBoxSizer(wxVERTICAL);
+		m_pIoctlInfoSizer = new wxStaticBoxSizer(wxVERTICAL, m_pExtSecondPanel, wxT("IOCTL信息"));
+
+		//
+		wxSizer* pSizer = new wxBoxSizer(wxHORIZONTAL);
+		m_vecSizerPointArray.push_back(pSizer);
+
+		m_pStaticIoctlNumber = new wxStaticText(m_pExtSecondPanel, wxID_ANY, wxT("Ioctl Code:"));
+		//m_pStaticIoctlNumber->SetMinSize(wxSize(50, 0));
+		pSizer->Add(m_pStaticIoctlNumber, 0, wxALIGN_CENTER_VERTICAL | wxALL, 2);
+		
+		m_pEdtShowIoctlCode = new wxTextCtrl(m_pExtSecondPanel, ID_EDTSHOWIOCTL);
+		
+		pSizer->Add(m_pEdtShowIoctlCode, 0, wxALIGN_CENTER_VERTICAL | wxALL, 3);
+
+		m_pStaticNumberOfIoctl = new wxStaticText(m_pExtSecondPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE_HORIZONTAL);
+		pSizer->Add(m_pStaticNumberOfIoctl, 1, wxALIGN_CENTER_VERTICAL | wxALL, 2);
+
+		m_pIoctlInfoSizer->Add(pSizer, 0, wxGROW | wxALL, 0);
+
+		//
+		pSizer = new wxBoxSizer(wxHORIZONTAL);
+		m_vecSizerPointArray.push_back(pSizer);
+
+		m_pStaticMnemonic = new wxStaticText(m_pExtSecondPanel, wxID_ANY, wxT("Mnemonic:"));
+
+		pSizer->Add(m_pStaticMnemonic, 0, wxALIGN_CENTRE_VERTICAL | wxALL, 2);
+
+		m_pEdtMnemonic = new wxTextCtrl(m_pExtSecondPanel, ID_EDTSHOWMNEMONIC);
+		pSizer->Add(m_pEdtMnemonic, 1, wxALIGN_CENTRE_VERTICAL | wxALL, 2);
+
+		m_pIoctlInfoSizer->Add(pSizer, 0, wxGROW | wxALL, 0);
+
+		m_pExtBoxSize2->Add(m_pIoctlInfoSizer, 0, wxGROW | wxALL, 5);
+		
+		m_pIoctlSetailsSizer = new wxStaticBoxSizer(wxVERTICAL, m_pExtSecondPanel, wxEmptyString);
+		m_pFlexGridSizer = new wxFlexGridSizer(3);
+		m_pFlexGridSizer->AddGrowableCol(1);
+
+		//
+		m_pStaticDeviceType = new wxStaticText(m_pExtSecondPanel, wxID_ANY, wxT("Device Type:"));
+		m_pFlexGridSizer->Add(m_pStaticDeviceType, wxSizerFlags().CenterVertical());
+
+		m_pEdtDeviceType = new wxTextCtrl(m_pExtSecondPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
+		m_pFlexGridSizer->Add(m_pEdtDeviceType, wxSizerFlags(1).Expand().CenterVertical().Border());
+
+		m_pSpinDeviceType = new wxSpinButton(m_pExtSecondPanel, ID_SPIL_FUNCTION);
+		m_pFlexGridSizer->Add(m_pSpinDeviceType, wxSizerFlags().CenterVertical());
+
+		//
+		m_vecSizerPointArray.push_back(pSizer);
+
+		m_pStaticFunction = new wxStaticText(m_pExtSecondPanel, wxID_ANY, wxT("Function:"));
+		m_pFlexGridSizer->Add(m_pStaticFunction, wxSizerFlags(0).CenterVertical());
+
+		m_pEdtFunction = new wxTextCtrl(m_pExtSecondPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
+		m_pFlexGridSizer->Add(m_pEdtFunction, wxSizerFlags(1).Expand().CenterVertical().Border());
+
+		m_pSpinFunction = new wxSpinButton(m_pExtSecondPanel, ID_SPIL_FUNCTION);
+		m_pFlexGridSizer->Add(m_pSpinFunction, wxSizerFlags(0).CenterVertical());
+		
+		//
+		m_vecSizerPointArray.push_back(pSizer);
+
+		m_pStaticMethod = new wxStaticText(m_pExtSecondPanel, wxID_ANY, wxT("Method:"));
+		m_pFlexGridSizer->Add(m_pStaticMethod, wxSizerFlags().CenterVertical());
+
+		m_pEdtMethod = new wxTextCtrl(m_pExtSecondPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
+		m_pFlexGridSizer->Add(m_pEdtMethod, wxSizerFlags(1).Expand().CenterVertical().Border());
+
+		m_pSpinMethod = new wxSpinButton(m_pExtSecondPanel, ID_SPIL_METHOD);
+		m_pFlexGridSizer->Add(m_pSpinMethod, wxSizerFlags().CenterVertical());
+
+		//m_pIoctlSetailsSizer->Add(m_pFlexGridSizer, 1, wxALIGN_CENTRE_VERTICAL | wxALL, 2);
+		//m_pIoctlSetailsSizer->Add(pSizer, 0, wxGROW | wxALL, 0);
+
+		//
+		m_pStaticAccess = new wxStaticText(m_pExtSecondPanel, wxID_ANY, wxT("Access:"));
+		m_pFlexGridSizer->Add(m_pStaticAccess, wxSizerFlags().CenterVertical());
+
+		m_pEdtAccess = new wxTextCtrl(m_pExtSecondPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
+		m_pFlexGridSizer->Add(m_pEdtAccess, wxSizerFlags(1).Expand().CenterVertical().Border());
+
+		m_pSpinAccess = new wxSpinButton(m_pExtSecondPanel, ID_SPIL_FUNCTION);
+		m_pFlexGridSizer->Add(m_pSpinAccess, wxSizerFlags().CenterVertical());
+
+		m_pIoctlSetailsSizer->Add(m_pFlexGridSizer, 0, wxGROW | wxALL, 0);
+		m_pExtBoxSize2->Add(m_pIoctlSetailsSizer, 0, wxGROW | wxALL, 5);
+		//Layout
+		m_pIoctlLayout = new wxStaticBoxSizer(wxVERTICAL, m_pExtSecondPanel, wxT("I/O Control Code Layout"));
+
+		wxFont ioctlFont(9, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Courier New"));
+
+		pSizer = new wxBoxSizer(wxVERTICAL);
+		m_vecSizerPointArray.push_back(pSizer);
+		m_pEdtIoctlLayout = new wxTextCtrl(m_pExtSecondPanel, wxID_ANY, wxT("00000000000000000000000000000000"), wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxTE_CENTER);
+		m_pEdtIoctlLayout->SetFont(ioctlFont);
+		pSizer->Add(m_pEdtIoctlLayout, 0, wxGROW | wxALL, 0);
+
+		wxBitmap ioctlLayoutBitmap(wxBITMAP(IOCTL_LAYOUT));
+		m_pShowIoctlLayout = new wxStaticBitmap(m_pExtSecondPanel, wxID_ANY, ioctlLayoutBitmap);
+		pSizer->Add(m_pShowIoctlLayout, 1, wxGROW | wxALL, 0);
+
+		//初始化Ioctl助记符
+		m_pIoctlControl = new CIoctlEdtControl(m_pEdtShowIoctlCode, m_pEdtMnemonic, m_pEdtDeviceType, m_pEdtFunction, m_pEdtMethod, m_pEdtAccess, m_pEdtIoctlLayout);
+		m_pEdtShowIoctlCode->SetLabelText(wxT("000B0000"));
+		wxString strTemp;
+		strTemp = wxString::Format(wxT("Recognizes %lu mnemonics"), m_pIoctlControl->GetMnemonicNumber());
+		m_pStaticNumberOfIoctl->SetLabelText(strTemp);
+
+		m_pIoctlLayout->Add(pSizer, 1, wxGROW | wxALL, 0);
+		m_pExtBoxSize2->Add(m_pIoctlLayout, 0, wxGROW | wxALL, 0);
+		
+		m_pExtSecondPanel->SetSizer(m_pExtBoxSize2);
+	};
+	InitlizeSecondPanel();
+	
+
+	///////////////////////////
+	
 	m_pExtenPanelMainBoxSizer->Add(m_pNotebook, 1, wxEXPAND | wxALL, 5);
 	pMainPanel->SetSizer(m_pExtenPanelMainBoxSizer);
 	m_pExtenPanelMainBoxSizer->SetSizeHints(pMainPanel);
@@ -848,4 +1061,52 @@ void CDriverToolFrame::UpdateDriverInfo()
 	{
 		RegCloseKey(hMainKey);
 	}
+}
+
+char * CDriverToolFrame::FindRes(DWORD dwResId, PDWORD pResSize)
+{
+	char *p = nullptr;
+	HRSRC hExe = NULL;
+
+	do 
+	{
+		hExe = FindResource(GetModuleHandle(NULL), MAKEINTRESOURCE(dwResId), RT_BITMAP);
+		if (hExe == NULL)
+		{
+			assert(false);
+			break;
+		}
+
+		DWORD dwResSize = SizeofResource(GetModuleHandle(NULL), hExe);
+		if (dwResSize == 0)
+		{
+			break;
+		}
+
+		if (pResSize != nullptr)
+		{
+			*pResSize = dwResSize;
+		}
+
+		HGLOBAL hData = LoadResource(GetModuleHandle(NULL), hExe);
+		if (hData == NULL)
+		{
+			break;
+		}
+
+		LPVOID pData = LockResource(hData);
+		if (pData == NULL)
+		{
+			break;
+		}
+
+		p = static_cast<char*>(pData);
+	} while (0);
+
+	return p;
+}
+
+void CDriverToolFrame::UpdateIoctlInfo(IOCTL_INFO & ioctlInfo)
+{
+	m_pIoctlControl->UpdateIoctlInfo(ioctlInfo);
 }

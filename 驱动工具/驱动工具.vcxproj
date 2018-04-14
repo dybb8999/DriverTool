@@ -171,6 +171,7 @@
   <ItemGroup>
     <ClInclude Include="ControlWorkerThread.h" />
     <ClInclude Include="DriverToolFrame.h" />
+    <ClInclude Include="IoctlEdtControl.h" />
     <ClInclude Include="MyApp.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ServiceControl.h" />
@@ -180,6 +181,7 @@
   <ItemGroup>
     <ClCompile Include="ControlWorkerThread.cpp" />
     <ClCompile Include="DriverToolFrame.cpp" />
+    <ClCompile Include="IoctlEdtControl.cpp" />
     <ClCompile Include="MyApp.cpp" />
     <ClCompile Include="ServiceControl.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -193,9 +195,12 @@
     <ResourceCompile Include="驱动工具.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="IoctlLayout.bmp" />
     <Image Include="sample.ico" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="image1.bin" />
+    <None Include="image2.bin" />
     <None Include="sample.xpm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
