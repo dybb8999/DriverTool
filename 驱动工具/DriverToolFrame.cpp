@@ -83,7 +83,10 @@ wxBEGIN_EVENT_TABLE(CDriverToolFrame, wxFrame)
 
 	//Second Panel
 	EVT_TEXT(ID_EDTSHOWIOCTL, OnIoctlCodeChange)
-
+	EVT_SPIN(ID_SPIL_DEVICETYPE, OnSpinClick)
+	EVT_SPIN(ID_SPIL_FUNCTION, OnSpinClick)
+	EVT_SPIN(ID_SPIL_METHOD, OnSpinClick)
+	EVT_SPIN(ID_SPIL_ACCESS, OnSpinClick)
 wxEND_EVENT_TABLE()
 
 std::map<wxString, wxString> g_GUIDMap;
@@ -667,8 +670,16 @@ void CDriverToolFrame::OnCollapsiblePaneExpand(wxCollapsiblePaneEvent & event)
 
 void CDriverToolFrame::OnIoctlCodeChange(wxCommandEvent & event)
 {
+	static wxString strLastCode = wxT("");
 	wxString strCode;
 	strCode = m_pEdtShowIoctlCode->GetValue();
+
+	if (strLastCode == strCode)
+	{
+		return;
+	}
+	strLastCode = strCode;
+
 	auto pCheckCode = [&]()->bool
 	{
 		bool bRet = false;
@@ -748,13 +759,52 @@ void CDriverToolFrame::OnIoctlCodeChange(wxCommandEvent & event)
 	UpdateIoctlInfo(ioctlInfo);
 }
 
+void CDriverToolFrame::OnSpinClick(wxSpinEvent & event)
+{
+	wxObject* pObject = event.GetEventObject();
+
+	do 
+	{
+		if (pObject == nullptr)
+		{
+			break;
+		}
+
+		IOCTL_INFO ioctlInfo = { 0 };
+		m_pIoctlControl->GetIoctlInfo(ioctlInfo);
+
+		if (pObject == m_pSpinDeviceType)
+		{
+			ioctlInfo.Info.DeviceType = m_pSpinDeviceType->GetValue();
+		}
+		else if (pObject == m_pSpinFunction)
+		{
+			ioctlInfo.Info.Function = m_pSpinFunction->GetValue();
+		}
+		else if (pObject == m_pSpinMethod)
+		{
+			ioctlInfo.Info.Method = m_pSpinMethod->GetValue();
+		}
+		else if (pObject == m_pSpinAccess)
+		{
+			ioctlInfo.Info.Access = m_pSpinAccess->GetValue();
+		}
+		else
+		{
+			break;
+		}
+
+		m_pIoctlControl->UpdateIoctlInfo(ioctlInfo);
+	} while (0);
+}
+
 void CDriverToolFrame::InitCollapsiblePane()
 {
 	m_pCollapsibleSizer = new wxBoxSizer(wxVERTICAL);
 	
 	wxWindow *pMainPanel;
 	m_pExtendPanel = new wxCollapsiblePane(this, ID_COLLAPSIBLEPANE, wxT("更多"));
-	m_pExtendPanel->SetBackgroundColour(wxColor(255, 255, 255));
+	m_pExtendPanel->SetForegroundColour(wxColor(255, 255, 255));
 
 	pMainPanel = m_pExtendPanel->GetPane();
 	m_pCollapsibleSizer->Add(m_pExtendPanel, 0, wxGROW | wxALL, 5);
@@ -815,7 +865,7 @@ void CDriverToolFrame::InitCollapsiblePane()
 		pSizer->Add(m_pStaticIoctlNumber, 0, wxALIGN_CENTER_VERTICAL | wxALL, 2);
 		
 		m_pEdtShowIoctlCode = new wxTextCtrl(m_pExtSecondPanel, ID_EDTSHOWIOCTL);
-		
+		m_pEdtShowIoctlCode->SetMaxLength(8);
 		pSizer->Add(m_pEdtShowIoctlCode, 0, wxALIGN_CENTER_VERTICAL | wxALL, 3);
 
 		m_pStaticNumberOfIoctl = new wxStaticText(m_pExtSecondPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE_HORIZONTAL);
@@ -850,6 +900,7 @@ void CDriverToolFrame::InitCollapsiblePane()
 		m_pFlexGridSizer->Add(m_pEdtDeviceType, wxSizerFlags(1).Expand().CenterVertical().Border());
 
 		m_pSpinDeviceType = new wxSpinButton(m_pExtSecondPanel, ID_SPIL_FUNCTION);
+		m_pSpinDeviceType->SetRange(0, 0xFFFF);
 		m_pFlexGridSizer->Add(m_pSpinDeviceType, wxSizerFlags().CenterVertical());
 
 		//
@@ -862,6 +913,7 @@ void CDriverToolFrame::InitCollapsiblePane()
 		m_pFlexGridSizer->Add(m_pEdtFunction, wxSizerFlags(1).Expand().CenterVertical().Border());
 
 		m_pSpinFunction = new wxSpinButton(m_pExtSecondPanel, ID_SPIL_FUNCTION);
+		m_pSpinFunction->SetRange(0, 0xFFF);
 		m_pFlexGridSizer->Add(m_pSpinFunction, wxSizerFlags(0).CenterVertical());
 		
 		//
@@ -874,6 +926,7 @@ void CDriverToolFrame::InitCollapsiblePane()
 		m_pFlexGridSizer->Add(m_pEdtMethod, wxSizerFlags(1).Expand().CenterVertical().Border());
 
 		m_pSpinMethod = new wxSpinButton(m_pExtSecondPanel, ID_SPIL_METHOD);
+		m_pSpinMethod->SetRange(0, 3);
 		m_pFlexGridSizer->Add(m_pSpinMethod, wxSizerFlags().CenterVertical());
 
 		//m_pIoctlSetailsSizer->Add(m_pFlexGridSizer, 1, wxALIGN_CENTRE_VERTICAL | wxALL, 2);
@@ -887,6 +940,7 @@ void CDriverToolFrame::InitCollapsiblePane()
 		m_pFlexGridSizer->Add(m_pEdtAccess, wxSizerFlags(1).Expand().CenterVertical().Border());
 
 		m_pSpinAccess = new wxSpinButton(m_pExtSecondPanel, ID_SPIL_FUNCTION);
+		m_pSpinAccess->SetRange(0, 3);
 		m_pFlexGridSizer->Add(m_pSpinAccess, wxSizerFlags().CenterVertical());
 
 		m_pIoctlSetailsSizer->Add(m_pFlexGridSizer, 0, wxGROW | wxALL, 0);
@@ -908,7 +962,7 @@ void CDriverToolFrame::InitCollapsiblePane()
 
 		//初始化Ioctl助记符
 		m_pIoctlControl = new CIoctlEdtControl(m_pEdtShowIoctlCode, m_pEdtMnemonic, m_pEdtDeviceType, m_pEdtFunction, m_pEdtMethod, m_pEdtAccess, m_pEdtIoctlLayout);
-		m_pEdtShowIoctlCode->SetLabelText(wxT("000B0000"));
+		//m_pEdtShowIoctlCode->SetLabelText(wxT("000B0000"));
 		wxString strTemp;
 		strTemp = wxString::Format(wxT("Recognizes %lu mnemonics"), m_pIoctlControl->GetMnemonicNumber());
 		m_pStaticNumberOfIoctl->SetLabelText(strTemp);

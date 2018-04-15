@@ -3,6 +3,7 @@
 #include <wx/textctrl.h>
 #include <wx/string.h>
 #include <map>
+#include <bitset>
 
 CIoctlEdtControl::CIoctlEdtControl(wxTextCtrl * code, wxTextCtrl * mnemonic, wxTextCtrl * devType, wxTextCtrl * function, wxTextCtrl * method, wxTextCtrl * access, wxTextCtrl * layout):
 	m_pEdtCode(code), m_pEdtMnemonic(mnemonic), m_pEdtDevType(devType), m_pEdtFunction(function), m_pEdtMethod(method), m_pEdtAccess(access), m_pEdtLayout(layout)
@@ -23,6 +24,7 @@ void CIoctlEdtControl::InitMapData()
 	INSERT(m_mapAccess, FILE_ANY_ACCESS);
 	INSERT(m_mapAccess, FILE_READ_ACCESS);
 	INSERT(m_mapAccess, FILE_WRITE_ACCESS);
+	INSERT(m_mapAccess, FILE_READ_ACCESS+FILE_WRITE_ACCESS);
 
 	//Method
 	INSERT(m_mapMethod, METHOD_BUFFERED);
@@ -129,11 +131,14 @@ void CIoctlEdtControl::UpdateIoctlInfo(const IOCTL_INFO & ioctlInfo)
 			m_pEdtMethod->SetLabelText(wxT(""));
 			m_pEdtAccess->SetLabelText(wxT(""));
 			m_pEdtLayout->SetLabelText(wxT(""));
+			//m_pEdtCode->SetLabelText(wxT("0x00000000"));
+			m_pEdtCode->SetInsertionPoint(-1);
+			m_pEdtLayout->SetLabelText(wxT("00000000000000000000000000000000"));
 			break;;
 		}
 
 		wxString strTemp;
-		strTemp = wxString::Format(wxT("0x%08X"), ioctlInfo.ulData);
+		strTemp = wxString::Format(wxT("%08X"), ioctlInfo.ulData);
 		m_pEdtCode->SetLabelText(strTemp);
 		m_pEdtCode->SetInsertionPoint(-1);
 
@@ -149,7 +154,7 @@ void CIoctlEdtControl::UpdateIoctlInfo(const IOCTL_INFO & ioctlInfo)
 		}
 
 		//Function
-		strTemp = wxString::Format(wxT("0x%08X"), ioctlInfo.Info.Function);
+		strTemp = wxString::Format(wxT("0x%X"), ioctlInfo.Info.Function);
 		m_pEdtFunction->SetLabelText(strTemp);
 
 		//Method
@@ -174,6 +179,19 @@ void CIoctlEdtControl::UpdateIoctlInfo(const IOCTL_INFO & ioctlInfo)
 			m_pEdtAccess->SetValue(wxT(""));
 		}
 
+		//DeviceType
+		auto p4 = m_mapDeviceType.find(ioctlInfo.Info.DeviceType);
+		if (p4 != m_mapDeviceType.end())
+		{
+			m_pEdtDevType->SetValue(p4->second);
+		}
+		else
+		{
+			m_pEdtDevType->SetValue(wxT("0"));
+		}
+
+		std::bitset<32> bitData(ioctlInfo.ulData);
+		m_pEdtLayout->SetLabelText(bitData.to_string());
 	} while (0);
 	
 }

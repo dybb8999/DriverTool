@@ -29,7 +29,8 @@ enum
 	ID_EDTSHOWMNEMONIC,//m_pEdtMnemonic
 	ID_SPIL_DEVICETYPE,
 	ID_SPIL_FUNCTION,
-	ID_SPIL_METHOD
+	ID_SPIL_METHOD,
+	ID_SPIL_ACCESS
 };
 
 enum ServiceControlCode
@@ -164,6 +165,7 @@ private:
 	void OnCollapsiblePaneExpand(wxCollapsiblePaneEvent& event);
 
 	void OnIoctlCodeChange(wxCommandEvent& event);
+	void OnSpinClick(wxSpinEvent& event);
 private:
 	void InitCollapsiblePane();
 	void InitWDMFilterData();
