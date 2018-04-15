@@ -19,14 +19,13 @@ enum
 	ID_BTN_MORE,
 	ID_GAUGE,
 	ID_EXTEND_FRAME,
-	//CollapsiblePane
 	ID_COLLAPSIBLEPANE,
 	ID_NOTEBOOK,
 	ID_RADIOBOX_PAGE1,
 	ID_RADIOBEGIN,
 	ID_RADIOEND = ID_RADIOBEGIN + 50,
 	ID_EDTSHOWIOCTL,
-	ID_EDTSHOWMNEMONIC,//m_pEdtMnemonic
+	ID_EDTSHOWMNEMONIC,
 	ID_SPIL_DEVICETYPE,
 	ID_SPIL_FUNCTION,
 	ID_SPIL_METHOD,
@@ -154,7 +153,6 @@ private:
 	void OnUnInstall(wxCommandEvent &event);
 	void OnWindowTop(wxCommandEvent &event);
 	void OnWindowMove(wxMoveEvent &event);
-	//void OnShowExtendFrame(wxCommandEvent &event);
 	void OnStartChange(wxCommandEvent & event);
 	void OnFilterDriverNotify(wxCommandEvent & event);
 
@@ -165,6 +163,7 @@ private:
 	void OnCollapsiblePaneExpand(wxCollapsiblePaneEvent& event);
 
 	void OnIoctlCodeChange(wxCommandEvent& event);
+	void OnIoctlMnemonicChange(wxCommandEvent& event);
 	void OnSpinClick(wxSpinEvent& event);
 private:
 	void InitCollapsiblePane();

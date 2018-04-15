@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\DeviceIoctlCode">
+      <UniqueIdentifier>{5af012df-db12-42c6-bc12-91e9c2a84eb1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -43,7 +46,16 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="KbdIoctlCode.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\DeviceIoctlCode</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintDevice.h">
+      <Filter>头文件\DeviceIoctlCode</Filter>
+    </ClInclude>
+    <ClInclude Include="HidDevice.h">
+      <Filter>头文件\DeviceIoctlCode</Filter>
+    </ClInclude>
+    <ClInclude Include="ddpar.h">
+      <Filter>头文件\DeviceIoctlCode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
