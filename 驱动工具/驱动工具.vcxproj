@@ -170,9 +170,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ControlWorkerThread.h" />
+    <ClInclude Include="ddpar.h" />
     <ClInclude Include="DriverToolFrame.h" />
+    <ClInclude Include="HidDevice.h" />
     <ClInclude Include="IoctlEdtControl.h" />
+    <ClInclude Include="KbdIoctlCode.h" />
     <ClInclude Include="MyApp.h" />
+    <ClInclude Include="PrintDevice.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ServiceControl.h" />
     <ClInclude Include="stdafx.h" />

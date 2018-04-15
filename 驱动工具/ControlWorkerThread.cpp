@@ -30,7 +30,6 @@ wxThread::ExitCode CControlWorkerThread::Entry()
 		case INSTALL:
 			if (sc.InstallService() != TRUE)
 			{
-				//strNotify.Format(wxT("´íÎó´úÂë£º%lu,%s"), sc.GetErrorCode(), sc.GetErrorStr(sc.GetErrorCode()));
 				swprintf_s(buff, L"´íÎó´úÂë£º%lu,%s", sc.GetErrorCode(), sc.GetErrorStr(sc.GetErrorCode()));
 				strNotify = buff;
 			}
@@ -43,7 +42,6 @@ wxThread::ExitCode CControlWorkerThread::Entry()
 		case START:
 			if (sc.RunService() != TRUE)
 			{
-				//strNotify.Format(wxT("´íÎó´úÂë£º%lu,%s"), sc.GetErrorCode(), sc.GetErrorStr(sc.GetErrorCode()));
 				swprintf_s(buff, L"´íÎó´úÂë£º%lu,%s", sc.GetErrorCode(), sc.GetErrorStr(sc.GetErrorCode()));
 				strNotify = buff;
 			}
@@ -56,7 +54,6 @@ wxThread::ExitCode CControlWorkerThread::Entry()
 		case STOP:
 			if (sc.StopService() != TRUE)
 			{
-				//strNotify.Format(wxT("´íÎó´úÂë£º%lu,%s"), sc.GetErrorCode(), sc.GetErrorStr(sc.GetErrorCode()));
 				swprintf_s(buff, L"´íÎó´úÂë£º%lu,%s", sc.GetErrorCode(), sc.GetErrorStr(sc.GetErrorCode()));
 				strNotify = buff;
 			}
@@ -69,7 +66,6 @@ wxThread::ExitCode CControlWorkerThread::Entry()
 		case UNINSTALL:
 			if (sc.UnInstallService() != TRUE)
 			{
-				//strNotify.Format(wxT("´íÎó´úÂë£º%lu,%s"), sc.GetErrorCode(), sc.GetErrorStr(sc.GetErrorCode()));
 				swprintf_s(buff, L"´íÎó´úÂë£º%lu,%s", sc.GetErrorCode(), sc.GetErrorStr(sc.GetErrorCode()));
 				strNotify = buff;
 			}

@@ -15,6 +15,7 @@ private:
 	wxTextCtrl* m_pEdtAccess;
 	wxTextCtrl* m_pEdtLayout;
 
+	std::map<wxString, ULONG> m_mapMnemonicToCode;
 	std::map<ULONG, wxString> m_mapCodeAndMnemonic;
 	std::map<ULONG, wxString> m_mapDeviceType;
 	//std::map<ULONG, wxString> m_mapFunction;
@@ -26,6 +27,7 @@ public:
 	void InitMapData();
 	ULONG_PTR GetMnemonicNumber();
 
+	void MnemonicSet(const wxString &strMnemonic);
 	void GetIoctlInfo(IOCTL_INFO &ioctlInfo);
 	void UpdateIoctlInfo(const IOCTL_INFO& ioctlInfo);
 };
