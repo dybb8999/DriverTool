@@ -172,6 +172,7 @@
     <ClInclude Include="ControlWorkerThread.h" />
     <ClInclude Include="DriverToolFrame.h" />
     <ClInclude Include="IoctlEdtControl.h" />
+    <ClInclude Include="KbdIoctlCode.h" />
     <ClInclude Include="MyApp.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ServiceControl.h" />
