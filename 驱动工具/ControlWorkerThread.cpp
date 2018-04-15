@@ -34,6 +34,10 @@ wxThread::ExitCode CControlWorkerThread::Entry()
 				swprintf_s(buff, L"错误代码：%lu,%s", sc.GetErrorCode(), sc.GetErrorStr(sc.GetErrorCode()));
 				strNotify = buff;
 			}
+			else
+			{
+				strNotify = wxT("服务安装成功");
+			}
 			break;
 
 		case START:
@@ -42,6 +46,10 @@ wxThread::ExitCode CControlWorkerThread::Entry()
 				//strNotify.Format(wxT("错误代码：%lu,%s"), sc.GetErrorCode(), sc.GetErrorStr(sc.GetErrorCode()));
 				swprintf_s(buff, L"错误代码：%lu,%s", sc.GetErrorCode(), sc.GetErrorStr(sc.GetErrorCode()));
 				strNotify = buff;
+			}
+			else
+			{
+				strNotify = wxT("服务启动成功");
 			}
 			break;
 
@@ -52,6 +60,10 @@ wxThread::ExitCode CControlWorkerThread::Entry()
 				swprintf_s(buff, L"错误代码：%lu,%s", sc.GetErrorCode(), sc.GetErrorStr(sc.GetErrorCode()));
 				strNotify = buff;
 			}
+			else
+			{
+				strNotify = wxT("服务停止成功");
+			}
 			break;
 
 		case UNINSTALL:
@@ -61,7 +73,14 @@ wxThread::ExitCode CControlWorkerThread::Entry()
 				swprintf_s(buff, L"错误代码：%lu,%s", sc.GetErrorCode(), sc.GetErrorStr(sc.GetErrorCode()));
 				strNotify = buff;
 			}
+			else
+			{
+				strNotify = wxT("服务卸载成功");
+			}
 			break;
+
+		default:
+			strNotify = wxT("......我是谁？我在哪？我在做什么？");
 		}
 
 	} while (0);
