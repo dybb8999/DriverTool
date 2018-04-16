@@ -9,6 +9,7 @@
 #include "PrintDevice.h"
 #include "HidDevice.h"
 #include "ddpar.h"
+#include "ksDevice.h"
 
 CIoctlEdtControl::CIoctlEdtControl(wxTextCtrl * code, wxTextCtrl * mnemonic, wxTextCtrl * devType, wxTextCtrl * function, wxTextCtrl * method, wxTextCtrl * access, wxTextCtrl * layout):
 	m_pEdtCode(code), m_pEdtMnemonic(mnemonic), m_pEdtDevType(devType), m_pEdtFunction(function), m_pEdtMethod(method), m_pEdtAccess(access), m_pEdtLayout(layout)
@@ -116,6 +117,19 @@ void CIoctlEdtControl::InitMapData()
 
 	//Code To Mnemonic
 	{
+		//Ks
+		{
+			INSERT(m_mapCodeAndMnemonic, m_mapMnemonicToCode, IOCTL_KS_PROPERTY);
+			INSERT(m_mapCodeAndMnemonic, m_mapMnemonicToCode, IOCTL_KS_ENABLE_EVENT);
+			INSERT(m_mapCodeAndMnemonic, m_mapMnemonicToCode, IOCTL_KS_DISABLE_EVENT);
+			INSERT(m_mapCodeAndMnemonic, m_mapMnemonicToCode, IOCTL_KS_METHOD);
+			INSERT(m_mapCodeAndMnemonic, m_mapMnemonicToCode, IOCTL_KS_WRITE_STREAM);
+			INSERT(m_mapCodeAndMnemonic, m_mapMnemonicToCode, IOCTL_KS_READ_STREAM);
+			INSERT(m_mapCodeAndMnemonic, m_mapMnemonicToCode, IOCTL_KS_RESET_STATE);
+			INSERT(m_mapCodeAndMnemonic, m_mapMnemonicToCode, IOCTL_KS_HANDSHAKE);
+
+		}
+
 		//Kbd
 		{
 			INSERT(m_mapCodeAndMnemonic, m_mapMnemonicToCode, IOCTL_KEYBOARD_QUERY_ATTRIBUTES);

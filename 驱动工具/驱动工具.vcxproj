@@ -175,6 +175,7 @@
     <ClInclude Include="HidDevice.h" />
     <ClInclude Include="IoctlEdtControl.h" />
     <ClInclude Include="KbdIoctlCode.h" />
+    <ClInclude Include="ksDevice.h" />
     <ClInclude Include="MyApp.h" />
     <ClInclude Include="PrintDevice.h" />
     <ClInclude Include="resource.h" />

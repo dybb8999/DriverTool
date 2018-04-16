@@ -57,6 +57,9 @@
     <ClInclude Include="ddpar.h">
       <Filter>头文件\DeviceIoctlCode</Filter>
     </ClInclude>
+    <ClInclude Include="ksDevice.h">
+      <Filter>头文件\DeviceIoctlCode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
