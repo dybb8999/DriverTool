@@ -424,8 +424,12 @@ void CDriverToolFrame::OnFilterDriverNotify(wxCommandEvent & event)
 		if (p->GetValue() == true)
 		{
 			//说明之前没有，是要添加
+			wxArrayString serviceArray;
+			wxString szItem;
 			bool bFind = false;
 			TCHAR *p = szDriverList;
+			
+			serviceArray.push_back(m_szServiceName);
 			while (*p != 0)
 			{
 				if (!_tcsicmp(m_szServiceName.c_str(), p))
@@ -434,6 +438,7 @@ void CDriverToolFrame::OnFilterDriverNotify(wxCommandEvent & event)
 					break;
 				}
 
+				serviceArray.push_back(p);
 				p += _tcslen(p) + 1;
 			}
 
@@ -443,11 +448,25 @@ void CDriverToolFrame::OnFilterDriverNotify(wxCommandEvent & event)
 				break;
 			}
 
-			_tcscpy_s(p, 1024 - (p - szDriverList), m_szServiceName.c_str());
-			p += _tcslen(p) + 1;
-			*p = 0;
+			memset(szDriverList, 0, 1024 * sizeof(TCHAR));
+			p = szDriverList;
+			auto iter = serviceArray.begin();
+			size_t length = 0;
+			for (; iter != serviceArray.end(); ++iter)
+			{
+				_tcscpy_s(p, 1024 - length, iter->c_str());
+				length += iter->Length();
+				p += iter->Length();
 
-			ulRet = RegSetValueEx(hMainKey, TEXT("UpperFilters"), 0, REG_MULTI_SZ, (CONST BYTE*)szDriverList, (p - szDriverList) * sizeof(TCHAR));
+				p += 1;
+				length += 1;
+			}
+
+			//_tcscpy_s(p, 1024 - (p - szDriverList), m_szServiceName.c_str());
+			//p += _tcslen(p) + 1;
+			//*p = 0;
+
+			ulRet = RegSetValueEx(hMainKey, TEXT("UpperFilters"), 0, REG_MULTI_SZ, (CONST BYTE*)szDriverList, length * sizeof(TCHAR));
 			if (ulRet != ERROR_SUCCESS)
 			{
 				break;
@@ -488,6 +507,7 @@ void CDriverToolFrame::OnFilterDriverNotify(wxCommandEvent & event)
 			{
 				_tcscpy_s(p, 1024 - length, iter->c_str());
 				length += iter->Length();
+				p += iter->Length();
 
 				p += 1;
 				length += 1;
