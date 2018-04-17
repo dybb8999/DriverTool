@@ -171,6 +171,7 @@ private:
 	void UpdateDriverInfo();
 	char* FindRes(DWORD dwResId, PDWORD pResSize = nullptr);
 	void UpdateIoctlInfo(IOCTL_INFO& ioctlInfo);
+	void NotifyExtFrame();
 private:
 	wxDECLARE_EVENT_TABLE();
 };

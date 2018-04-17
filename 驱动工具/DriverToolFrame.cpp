@@ -110,7 +110,7 @@ CDriverToolFrame::CDriverToolFrame() :wxFrame(NULL, wxID_ANY, wxT("Çý¶¯¹¤¾ß"), w
 	m_pStaticPath->SetFont(font);
 	m_pStaticBoxTopSizer->Add(m_pStaticPath, 0, wxALIGN_LEFT | wxALIGN_CENTRE_VERTICAL | wxALL, 5);
 
-	m_pEdtDriverPath = new wxTextCtrl(this, ID_EDIT_FILEPATH);
+	m_pEdtDriverPath = new wxTextCtrl(this, ID_EDIT_FILEPATH, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
 	m_pEdtDriverPath->SetFont(font);
 	m_pStaticBoxTopSizer->Add(m_pEdtDriverPath, 1, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
@@ -193,6 +193,7 @@ void CDriverToolFrame::OnSelectFile(wxCommandEvent & event)
 
 		wxString szPath = fileDialog.GetPath();
 		m_pEdtDriverPath->SetLabelText(szPath);
+		NotifyExtFrame();
 	} while (0);
 }
 
@@ -586,9 +587,8 @@ void CDriverToolFrame::OnDropFile(wxDropFilesEvent & event)
 	if (event.GetNumberOfFiles() > 0)
 	{
 		m_pEdtDriverPath->SetLabelText(event.GetFiles()[0]);
+		NotifyExtFrame();
 	}
-
-	
 }
 
 void CDriverToolFrame::OnCollapsiblePaneExpand(wxCollapsiblePaneEvent & event)
@@ -601,11 +601,7 @@ void CDriverToolFrame::OnCollapsiblePaneExpand(wxCollapsiblePaneEvent & event)
 			break;
 		}
 
-		wxString szPath;
-		szPath = m_pEdtDriverPath->GetLabelText();
-		CServiceControl sc;
-		m_szServiceName = sc.FindServiceName(szPath.c_str());
-		UpdateDriverInfo();
+		NotifyExtFrame();
 	} while (0);
 }
 
@@ -1116,4 +1112,13 @@ char * CDriverToolFrame::FindRes(DWORD dwResId, PDWORD pResSize)
 void CDriverToolFrame::UpdateIoctlInfo(IOCTL_INFO & ioctlInfo)
 {
 	m_pIoctlControl->UpdateIoctlInfo(ioctlInfo);
+}
+
+void CDriverToolFrame::NotifyExtFrame()
+{
+	wxString szPath;
+	szPath = m_pEdtDriverPath->GetLabelText();
+	CServiceControl sc;
+	m_szServiceName = sc.FindServiceName(szPath.c_str());
+	UpdateDriverInfo();
 }

@@ -127,7 +127,6 @@ void CIoctlEdtControl::InitMapData()
 			INSERT(m_mapCodeAndMnemonic, m_mapMnemonicToCode, IOCTL_KS_READ_STREAM);
 			INSERT(m_mapCodeAndMnemonic, m_mapMnemonicToCode, IOCTL_KS_RESET_STATE);
 			INSERT(m_mapCodeAndMnemonic, m_mapMnemonicToCode, IOCTL_KS_HANDSHAKE);
-
 		}
 
 		//Kbd
