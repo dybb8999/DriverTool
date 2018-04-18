@@ -14,7 +14,7 @@ Now we can use this tool.
 
 # Getting Started
 1.	Download VisualStudio 2015 ,maybe 2013 2017 is ok.
-2.	Build wxWidgets 3.1.0
+2.	Build wxWidgets 3.1.1
 3.	Set project library's path(wxWidgets)
 4.	Build
 
