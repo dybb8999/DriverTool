@@ -362,7 +362,7 @@ void CDriverToolFrame::OnStartChange(wxCommandEvent & event)
 		}
 
 		ulRet = sizeof(DWORD);
-		ulRet = RegSetKeyValue(hMainKey, NULL, TEXT("Start"), REG_DWORD, &nSelect, sizeof(DWORD));
+		ulRet = RegSetValueEx(hMainKey, TEXT("Start"), 0, REG_DWORD, (const PBYTE)&nSelect, sizeof(DWORD));
 		if (ulRet != ERROR_SUCCESS)
 		{
 			break;
@@ -409,7 +409,8 @@ void CDriverToolFrame::OnFilterDriverNotify(wxCommandEvent & event)
 		}
 
 		dwRetSize = 2048;
-		ulRet = RegGetValue(hMainKey, NULL, TEXT("UpperFilters"), RRF_RT_REG_MULTI_SZ | RRF_RT_REG_SZ, NULL, szDriverList, &dwRetSize);
+		//ulRet = RegGetValue(hMainKey, NULL, TEXT("UpperFilters"), RRF_RT_REG_MULTI_SZ | RRF_RT_REG_SZ, NULL, szDriverList, &dwRetSize);
+		ulRet = RegQueryValueEx(hMainKey, TEXT("UpperFilters"), 0, NULL, (const PBYTE)szDriverList, &dwRetSize);
 		if (ulRet != ERROR_SUCCESS)
 		{
 			if (ulRet != ERROR_FILE_NOT_FOUND)
@@ -1018,6 +1019,7 @@ void CDriverToolFrame::UpdateDriverInfo()
 	ULONG ulRet = 0;
 	DWORD dwStart = 3;
 	DWORD dwRetSize;
+	DWORD dwValueType = 0;
 	do
 	{
 		if (m_szServiceName == wxT(""))
@@ -1031,9 +1033,10 @@ void CDriverToolFrame::UpdateDriverInfo()
 			SetStatusText(wxT("注册表访问失败，请确定服务已经安装或该程序有足够高权限"));
 			break;
 		}
-
+		
 		dwRetSize = 4;
-		ulRet = RegGetValue(hMainKey, NULL, TEXT("Start"), RRF_RT_REG_DWORD, NULL, &dwStart, &dwRetSize);
+		//ulRet = RegGetValue(hMainKey, NULL, TEXT("Start"), RRF_RT_REG_DWORD, NULL, &dwStart, &dwRetSize);
+		ulRet = RegQueryValueEx(hMainKey, TEXT("Start"), 0, NULL, (const PBYTE)&dwStart, &dwRetSize);
 		if (ulRet != ERROR_SUCCESS)
 		{
 			SetStatusText(wxT("Start键值访问失败"));
@@ -1057,7 +1060,8 @@ void CDriverToolFrame::UpdateDriverInfo()
 			}
 
 			dwRetSize = 2048;
-			ulRet = RegGetValue(hMainKey, NULL, TEXT("UpperFilters"), RRF_RT_REG_MULTI_SZ | RRF_RT_REG_SZ, NULL, szDriverList, &dwRetSize);
+			//ulRet = RegGetValue(hMainKey, NULL, TEXT("UpperFilters"), RRF_RT_REG_MULTI_SZ | RRF_RT_REG_SZ, NULL, szDriverList, &dwRetSize);
+			ulRet = RegQueryValueEx(hMainKey, TEXT("UpperFilters"), 0, NULL, (const PBYTE)szDriverList, &dwRetSize);
 			if (ulRet != ERROR_SUCCESS)
 			{
 				continue;
