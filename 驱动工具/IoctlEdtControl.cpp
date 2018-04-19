@@ -476,20 +476,22 @@ void CIoctlEdtControl::UpdateIoctlInfo(const IOCTL_INFO & ioctlInfo)
 	{
 		if (ioctlInfo.ulData == 0)
 		{
+			m_pEdtMnemonic->SetLabelText(wxT(""));
 			m_pEdtDevType->SetLabelText(wxT(""));
 			m_pEdtFunction->SetLabelText(wxT(""));
 			m_pEdtMethod->SetLabelText(wxT(""));
 			m_pEdtAccess->SetLabelText(wxT(""));
 			m_pEdtLayout->SetLabelText(wxT(""));
-			m_pEdtCode->SetInsertionPoint(-1);
+			//m_pEdtCode->SetInsertionPoint(-1);
 			m_pEdtLayout->SetLabelText(wxT("00000000000000000000000000000000"));
 			break;;
 		}
 
 		wxString strTemp;
 		strTemp = wxString::Format(wxT("%08X"), ioctlInfo.ulData);
+		long lastInsertPos = m_pEdtCode->GetInsertionPoint();
 		m_pEdtCode->SetLabelText(strTemp);
-		m_pEdtCode->SetInsertionPoint(-1);
+		m_pEdtCode->SetInsertionPoint(lastInsertPos);
 
 		//DeviceType
 		auto p1 = m_mapDeviceType.find(ioctlInfo.Info.DeviceType);
