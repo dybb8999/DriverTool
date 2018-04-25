@@ -1153,7 +1153,7 @@ void CDriverToolFrame::NotifyExtFrame()
 
 void CDriverToolFrame::ClearCheckBox()
 {
-	for (int i = 0; g_GUIDMap.size(); ++i)
+	for (unsigned i = 0; i < g_GUIDMap.size(); ++i)
 	{
 		m_ppCheckBoxArray[i]->SetValue(false);
 	}
