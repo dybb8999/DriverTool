@@ -193,6 +193,8 @@ void CDriverToolFrame::OnSelectFile(wxCommandEvent & event)
 
 		wxString szPath = fileDialog.GetPath();
 		m_pEdtDriverPath->SetLabelText(szPath);
+
+		ClearCheckBox();
 		NotifyExtFrame();
 	} while (0);
 }
@@ -608,6 +610,8 @@ void CDriverToolFrame::OnDropFile(wxDropFilesEvent & event)
 	if (event.GetNumberOfFiles() > 0)
 	{
 		m_pEdtDriverPath->SetLabelText(event.GetFiles()[0]);
+
+		ClearCheckBox();
 		NotifyExtFrame();
 	}
 }
@@ -1145,4 +1149,12 @@ void CDriverToolFrame::NotifyExtFrame()
 	CServiceControl sc;
 	m_szServiceName = sc.FindServiceName(szPath.c_str());
 	UpdateDriverInfo();
+}
+
+void CDriverToolFrame::ClearCheckBox()
+{
+	for (int i = 0; g_GUIDMap.size(); ++i)
+	{
+		m_ppCheckBoxArray[i]->SetValue(false);
+	}
 }

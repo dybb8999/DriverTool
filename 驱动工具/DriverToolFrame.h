@@ -172,6 +172,7 @@ private:
 	char* FindRes(DWORD dwResId, PDWORD pResSize = nullptr);
 	void UpdateIoctlInfo(IOCTL_INFO& ioctlInfo);
 	void NotifyExtFrame();
+	void ClearCheckBox();
 private:
 	wxDECLARE_EVENT_TABLE();
 };
