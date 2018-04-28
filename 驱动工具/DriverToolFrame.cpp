@@ -1011,7 +1011,7 @@ void CDriverToolFrame::InitWDMFilterData()
 	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("WPD"), wxT("{eec5ad98-8080-425f-922a-dabf3de3f69a}")));
 	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("SideShow"), wxT("{997b5d8d-c442-4f2e-baf3-9c8e671e9e21}")));
 	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Camera"), wxT("{ca3e7ab9-b4c3-4ae6-8251-579ef933890f}")));
-
+	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("AudioEndpoint"), wxT("{c166523c-fe0c-4a94-a586-f1a80cfbbf3e}")));
 }
 
 void CDriverToolFrame::UpdateDriverInfo()
