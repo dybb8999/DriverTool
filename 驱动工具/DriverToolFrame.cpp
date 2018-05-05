@@ -960,58 +960,86 @@ void CDriverToolFrame::InitCollapsiblePane()
 
 void CDriverToolFrame::InitWDMFilterData()
 {
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Battery"), wxT("{72631e54-78a4-11d0-bcf7-00aa00b7b32a}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Biometric"), wxT("{53D29EF7-377C-4D14-864B-EB3A85769359}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Bluetooth"), wxT("{e0cbf06c-cd8b-4647-bb8a-263b43f0f974}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("CDROM"), wxT("{4d36e965-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("DiskDrive"), wxT("{4d36e967-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Display"), wxT("{4d36e968-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Extension"), wxT("{e2f84ce7-8efa-411c-aa69-97454ca4cb57}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("FDC"), wxT("{4d36e969-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("FloppyDisk"), wxT("{4d36e980-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("GPS"), wxT("{6bdd1fc3-810f-11d0-bec7-08002be2092f}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("HDC"), wxT("{4d36e96a-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("HIDClass"), wxT("{745a17a0-74d3-11d0-b6fe-00a0c90f57da}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Dot4"), wxT("{48721b56-6795-11d2-b1a8-0080c72e74a2}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Dot4Print"), wxT("{49ce6ac8-6f86-11d2-b1e5-0080c72e74a2}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("61883"), wxT("{7ebefbc0-3200-11d2-b4c2-00a0C9697d07}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("AVC"), wxT("{c06ff265-ae09-48f0-812c-16753d7cba83}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("SBP2"), wxT("{d48179be-ec20-11d1-b6b8-00c04fa372a7}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("1394"), wxT("{6bdd1fc1-810f-11d0-bec7-08002be2092f}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Image"), wxT("{6bdd1fc6-810f-11d0-bec7-08002be2092f}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Infrared"), wxT("{6bdd1fc5-810f-11d0-bec7-08002be2092f}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Keyboard"), wxT("{4d36e96b-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("MediumChanger"), wxT("{ce5939ae-ebde-11d0-b181-0000f8753ec4}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("MTD"), wxT("{4d36e970-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Modem"), wxT("{4d36e96d-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Monitor"), wxT("{4d36e96e-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Mouse"), wxT("{4d36e96f-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Multifunction"), wxT("{4d36e971-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Media"), wxT("{4d36e96c-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("MultiportSerial"), wxT("{50906cb8-ba12-11d1-bf5d-0000f805f530}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Net"), wxT("{4d36e972-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("NetClient"), wxT("{4d36e973-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("NetService"), wxT("{4d36e974-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("NetTrans"), wxT("{4d36e975-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("SecurityAccelerator"), wxT("{268c95a1-edfe-11d3-95c3-0010dc4050a5}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("PCMCIA"), wxT("{4d36e977-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Ports"), wxT("{4d36e978-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Printer"), wxT("{4d36e979-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("PNPPrinters"), wxT("{4658ee7e-f050-11d1-b6bd-00c04fa372a7}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Processor"), wxT("{50127dc3-0f36-415e-a6cc-4cb3be910b65}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("SCSIAdapter"), wxT("{4d36e97b-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Sensor"), wxT("{5175d334-c371-4806-b3ba-71fd53c9258d}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("SmartCardReader"), wxT("{50dd5230-ba8a-11d1-bf5d-0000f805f530}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("SoftwareComponent"), wxT("{5c4c3332-344d-483c-8739-259e934c9cc8}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Volume"), wxT("{71a27cdd-812a-11d0-bec7-08002be2092f}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("System"), wxT("{4d36e97d-e325-11ce-bfc1-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("TapeDrive"), wxT("{6d807884-7d21-11cf-801c-08002be10318}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("USBDevice"), wxT("{88BAE032-5A81-49f0-BC3D-A4FF138216D6}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("WCEUSBS"), wxT("{25dbce51-6c8f-4a72-8a6d-b54c2b4fc835}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("WPD"), wxT("{eec5ad98-8080-425f-922a-dabf3de3f69a}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("SideShow"), wxT("{997b5d8d-c442-4f2e-baf3-9c8e671e9e21}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("Camera"), wxT("{ca3e7ab9-b4c3-4ae6-8251-579ef933890f}")));
-	g_GUIDMap.insert(std::pair<wxString, wxString>(wxT("AudioEndpoint"), wxT("{c166523c-fe0c-4a94-a586-f1a80cfbbf3e}")));
+	HKEY hRegKey = NULL;
+	HKEY hSubRegKey = NULL;
+	LONG lRet = 0;
+	DWORD dwIndex = 0;
+	DWORD nKeyNameBuffSize = 32767;
+	wchar_t *pKeyName = NULL;
+	wchar_t *pClassName = NULL;
+
+	do 
+	{
+		pKeyName = (wchar_t*)calloc(32767, sizeof(wchar_t));
+		if (pKeyName == NULL)
+		{
+			break;
+		}
+		memset(pKeyName, 0, 32767 * sizeof(wchar_t));
+
+		pClassName = (wchar_t*)calloc(32767, sizeof(wchar_t));
+		if (pClassName == NULL)
+		{
+			break;
+		}
+		memset(pClassName, 0, 32767 * sizeof(wchar_t));
+
+		lRet = RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SYSTEM\\CurrentControlSet\\Control\\Class", 0, KEY_READ | KEY_WOW64_64KEY, &hRegKey);
+		if (lRet != ERROR_SUCCESS)
+		{
+			break;
+		}
+
+		dwIndex = 0;
+		nKeyNameBuffSize = 32767;
+		while (RegEnumKeyExW(hRegKey, dwIndex, pKeyName, &nKeyNameBuffSize, 0, 0, 0, 0) == ERROR_SUCCESS)
+		{
+			do 
+			{
+				lRet = RegOpenKeyExW(hRegKey, pKeyName, 0, KEY_READ | KEY_WOW64_64KEY, &hSubRegKey);
+				if (lRet != ERROR_SUCCESS)
+				{
+					break;
+				}
+
+				nKeyNameBuffSize = 32767;
+				lRet = RegQueryValueExW(hSubRegKey, L"Class", 0, 0, (LPBYTE)pClassName, &nKeyNameBuffSize);
+				if (lRet != ERROR_SUCCESS)
+				{
+					break;
+				}
+
+				g_GUIDMap.insert(std::pair<wxString, wxString>(pClassName, pKeyName));
+			} while (0);
+
+			if (hSubRegKey != NULL)
+			{
+				RegCloseKey(hSubRegKey);
+				hSubRegKey = NULL;
+			}
+
+			++dwIndex;
+			nKeyNameBuffSize = 32767;
+		}
+	} while (0);
+
+	if (pKeyName != NULL)
+	{
+		free(pKeyName);
+		pKeyName = NULL;
+	}
+
+	if (pClassName != NULL)
+	{
+		free(pClassName);
+		pClassName = NULL;
+	}
+
+	if (hRegKey != NULL)
+	{
+		RegCloseKey(hRegKey);
+		hRegKey = NULL;
+	}
 }
 
 void CDriverToolFrame::UpdateDriverInfo()
@@ -1039,7 +1067,6 @@ void CDriverToolFrame::UpdateDriverInfo()
 		}
 		
 		dwRetSize = 4;
-		//ulRet = RegGetValue(hMainKey, NULL, TEXT("Start"), RRF_RT_REG_DWORD, NULL, &dwStart, &dwRetSize);
 		ulRet = RegQueryValueEx(hMainKey, TEXT("Start"), 0, NULL, (const PBYTE)&dwStart, &dwRetSize);
 		if (ulRet != ERROR_SUCCESS)
 		{
@@ -1064,7 +1091,6 @@ void CDriverToolFrame::UpdateDriverInfo()
 			}
 
 			dwRetSize = 2048;
-			//ulRet = RegGetValue(hMainKey, NULL, TEXT("UpperFilters"), RRF_RT_REG_MULTI_SZ | RRF_RT_REG_SZ, NULL, szDriverList, &dwRetSize);
 			ulRet = RegQueryValueEx(hMainKey, TEXT("UpperFilters"), 0, NULL, (const PBYTE)szDriverList, &dwRetSize);
 			if (ulRet != ERROR_SUCCESS)
 			{
