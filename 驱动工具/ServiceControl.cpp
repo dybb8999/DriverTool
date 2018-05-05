@@ -25,122 +25,183 @@ void CServiceControl::SetPath(const TCHAR * filePath)
 
 BOOL CServiceControl::InstallService()
 {
-	SC_HANDLE sc_manage = OpenSCManager(NULL, NULL, SC_MANAGER_CREATE_SERVICE);
-	if (NULL != sc_manage)
+	SC_HANDLE sc_manage = NULL;
+	SC_HANDLE sc_service = NULL;
+	BOOL bRet = FALSE;
+
+	do 
 	{
-		SC_HANDLE sc_service = CreateService(
+		sc_manage = OpenSCManager(NULL, NULL, SC_MANAGER_CREATE_SERVICE);
+		if (NULL == sc_manage)
+		{
+			m_errorCode = GetLastError();
+			break;
+		}
+
+		sc_service = CreateService(
 			sc_manage, m_serviceName, m_serviceName, SERVICE_ALL_ACCESS, SERVICE_KERNEL_DRIVER, SERVICE_DEMAND_START, SERVICE_ERROR_IGNORE,
 			m_filePath, NULL, NULL, NULL, NULL, NULL);
 		if (NULL == sc_service)
 		{
 			m_errorCode = GetLastError();
-			CloseServiceHandle(sc_manage);
-			return FALSE;
+			break;
 		}
 
-		CloseServiceHandle(sc_manage);
-	}
-	else
+		bRet = TRUE;
+	} while (0);
+
+	if (sc_service != NULL)
 	{
-		m_errorCode = GetLastError();
-		return FALSE;
+		CloseServiceHandle(sc_service);
+		sc_service = NULL;
 	}
 
-	return TRUE;
+	if (sc_manage != NULL)
+	{
+		CloseServiceHandle(sc_manage);
+		sc_manage = NULL;
+	}
+
+	return bRet;
 }
 
 BOOL CServiceControl::RunService()
 {
-	SC_HANDLE sc_manage = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
-	if (NULL != sc_manage)
+	SC_HANDLE sc_manage = NULL;
+	SC_HANDLE sc_service = NULL;
+	BOOL bRet = FALSE;
+
+	do 
 	{
-		SC_HANDLE sc_service = OpenService(sc_manage, m_serviceName, SERVICE_ALL_ACCESS);
+		sc_manage = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
+		if (NULL == sc_manage)
+		{
+			m_errorCode = GetLastError();
+			break;
+		}
+
+		sc_service = OpenService(sc_manage, m_serviceName, SERVICE_ALL_ACCESS);
 		if (NULL == sc_service)
 		{
 			m_errorCode = GetLastError();
-			CloseServiceHandle(sc_manage);
-			return FALSE;
+			break;
 		}
 
 		if (StartService(sc_service, NULL, NULL) == FALSE)
 		{
 			m_errorCode = GetLastError();
-			CloseServiceHandle(sc_service);
-			return FALSE;
+			break;
 		}
 
-		CloseServiceHandle(sc_manage);
-	}
-	else
+		bRet = TRUE;
+	} while (0);
+
+	if (sc_service != NULL)
 	{
-		m_errorCode = GetLastError();
-		return FALSE;
+		CloseServiceHandle(sc_service);
+		sc_service = NULL;
 	}
-	return TRUE;
+
+	if (sc_manage != NULL)
+	{
+		CloseServiceHandle(sc_manage);
+		sc_manage = NULL;
+	}
+
+	return bRet;
 }
 
 BOOL CServiceControl::StopService()
 {
-	SC_HANDLE sc_manage = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
-	if (NULL != sc_manage)
+	SC_HANDLE sc_manage = NULL;
+	SC_HANDLE sc_service = NULL;
+	SERVICE_STATUS ss = { 0 };
+	BOOL bRet = FALSE;
+
+	do 
 	{
-		SC_HANDLE sc_service = OpenService(sc_manage, m_serviceName, SERVICE_ALL_ACCESS);
+		sc_manage = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
+		if (NULL == sc_manage)
+		{
+			m_errorCode = GetLastError();
+			break;
+		}
+
+		sc_service = OpenService(sc_manage, m_serviceName, SERVICE_ALL_ACCESS);
 		if (NULL == sc_service)
 		{
 			m_errorCode = GetLastError();
-			CloseServiceHandle(sc_manage);
-			return FALSE;
+			break;
 		}
 
-		SERVICE_STATUS ss = { 0 };
 		if (ControlService(sc_service, SERVICE_CONTROL_STOP, &ss) == FALSE)
 		{
 			m_errorCode = GetLastError();
-			CloseServiceHandle(sc_service);
-			CloseServiceHandle(sc_manage);
-			return FALSE;
+			break;
 		}
 
-		CloseServiceHandle(sc_service);
-		CloseServiceHandle(sc_manage);
-	}
-	else
+		bRet = TRUE;
+	} while (0);
+	
+	if (sc_service != NULL)
 	{
-		m_errorCode = GetLastError();
-		return FALSE;
+		CloseServiceHandle(sc_service);
+		sc_service = NULL;
 	}
-	return TRUE;
+
+	if (sc_manage != NULL)
+	{
+		CloseServiceHandle(sc_manage);
+		sc_manage = NULL;
+	}
+
+	return bRet;
 }
 
 BOOL CServiceControl::UnInstallService()
 {
-	SC_HANDLE sc_manage = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
-	if (NULL != sc_manage)
+	SC_HANDLE sc_manage = NULL;
+	SC_HANDLE sc_service = NULL;
+	BOOL bRet = FALSE;
+
+	do 
 	{
-		SC_HANDLE sc_service = OpenService(sc_manage, m_serviceName, SERVICE_ALL_ACCESS);
-		if (NULL == sc_service)
+		sc_manage = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
+		if (sc_manage == NULL)
 		{
 			m_errorCode = GetLastError();
-			CloseServiceHandle(sc_manage);
-			return FALSE;
+			break;
+		}
+
+		sc_service = OpenService(sc_manage, m_serviceName, SERVICE_ALL_ACCESS);
+		if (sc_service == NULL)
+		{
+			m_errorCode = GetLastError();
+			break;
 		}
 
 		if (DeleteService(sc_service) == FALSE)
 		{
 			m_errorCode = GetLastError();
-			CloseServiceHandle(sc_manage);
-			return FALSE;
+			break;
 		}
 
-		CloseServiceHandle(sc_service);
-		CloseServiceHandle(sc_manage);
-	}
-	else
+		bRet = TRUE;
+	} while (0);
+	
+	if (sc_service != NULL)
 	{
-		m_errorCode = GetLastError();
-		return FALSE;
+		CloseServiceHandle(sc_service);
+		sc_service = NULL;
 	}
-	return TRUE;
+
+	if (sc_manage != NULL)
+	{
+		CloseServiceHandle(sc_manage);
+		sc_manage = NULL;
+	}
+
+	return bRet;
 }
 
 TCHAR * CServiceControl::FindServiceName(const TCHAR * filePath)
