@@ -147,14 +147,17 @@ CDriverToolFrame::CDriverToolFrame() :wxFrame(NULL, wxID_ANY, wxT("驱动工具"), w
 	m_pEdtShow->SetFont(font);
 	m_pBottomBoxSizer->Add(m_pEdtShow, 1, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
+	m_pActivityInicator = new wxActivityIndicator(this);
+	m_pBottomBoxSizer->Add(m_pActivityInicator, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
 	m_pStaticName = new wxStaticText(this, wxID_ANY, wxT("By.Hell"));
 	m_pStaticName->SetFont(font);
 	m_pBottomBoxSizer->Add(m_pStaticName, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	m_pOtherBoxSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, wxT("进度条"));
+	//m_pOtherBoxSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, wxT("进度条"));
 
-	m_pGauge = new wxGauge(this, ID_GAUGE, 100);
-	m_pOtherBoxSizer->Add(m_pGauge, 1, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	//m_pGauge = new wxGauge(this, ID_GAUGE, 100);
+	//m_pOtherBoxSizer->Add(m_pGauge, 1, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 	//Extend Panel
 	
@@ -162,7 +165,7 @@ CDriverToolFrame::CDriverToolFrame() :wxFrame(NULL, wxID_ANY, wxT("驱动工具"), w
 	m_pMainBoxSizer->Add(m_pStaticBoxTopSizer, 1, wxEXPAND, 10);
 	m_pMainBoxSizer->Add(m_pMiddleStaticBoxSizer, 1, wxEXPAND, 10);
 	m_pMainBoxSizer->Add(m_pBottomBoxSizer, 1, wxEXPAND, 10);
-	m_pMainBoxSizer->Add(m_pOtherBoxSizer, 1, wxEXPAND, 10);
+	//m_pMainBoxSizer->Add(m_pOtherBoxSizer, 1, wxEXPAND, 10);
 
 	InitCollapsiblePane();
 
@@ -217,6 +220,8 @@ void CDriverToolFrame::OnInstall(wxCommandEvent & event)
 			break;
 		}
 
+		m_pEdtShow->SetLabelText(wxT("正在安装服务......"));
+
 		pThread->m_ulMessageID = INSTALL;
 
 		if (pThread->Run() != wxTHREAD_NO_ERROR)
@@ -224,6 +229,8 @@ void CDriverToolFrame::OnInstall(wxCommandEvent & event)
 			m_pEdtShow->SetLabelText(wxT("线程启动失败"));
 			break;
 		}
+
+		DisableAllButton();
 	} while (0);
 	
 }
@@ -256,6 +263,8 @@ void CDriverToolFrame::OnStart(wxCommandEvent & event)
 			break;
 		}
 
+		m_pEdtShow->SetLabelText(wxT("正在启动服务......"));
+
 		pThread->m_ulMessageID = START;
 
 		if (pThread->Run() != wxTHREAD_NO_ERROR)
@@ -264,6 +273,8 @@ void CDriverToolFrame::OnStart(wxCommandEvent & event)
 			m_pEdtShow->SetLabelText(wxT("线程启动失败"));
 			break;
 		}
+
+		DisableAllButton();
 	} while (0);
 }
 
@@ -285,13 +296,22 @@ void CDriverToolFrame::OnStop(wxCommandEvent & event)
 			break;
 		}
 
+		m_pEdtShow->SetLabelText(wxT("正在停止服务......"));
+
 		pThread->m_ulMessageID = STOP;
+
+		if (m_pActivityInicator != NULL)
+		{
+			m_pActivityInicator->Start();
+		}
 
 		if (pThread->Run() != wxTHREAD_NO_ERROR)
 		{
 			m_pEdtShow->SetLabelText(wxT("线程启动失败"));
 			break;
 		}
+
+		DisableAllButton();
 	} while (0);
 }
 
@@ -313,13 +333,22 @@ void CDriverToolFrame::OnUnInstall(wxCommandEvent & event)
 			break;
 		}
 
+		m_pEdtShow->SetLabelText(wxT("正在停止服务......"));
+
 		pThread->m_ulMessageID = UNINSTALL;
+
+		if (m_pActivityInicator != NULL)
+		{
+			m_pActivityInicator->Start();
+		}
 
 		if (pThread->Run() != wxTHREAD_NO_ERROR)
 		{
 			m_pEdtShow->SetLabelText(wxT("线程启动失败"));
 			break;
 		}
+
+		DisableAllButton();
 	} while (0);
 }
 
@@ -564,9 +593,14 @@ void CDriverToolFrame::DisableAllButton()
 		m_pBtnUninstall->Enable(false);
 	}
 
-	if (m_pGauge != NULL)
+	//if (m_pGauge != NULL)
+	//{
+	//	m_pGauge->Pulse();
+	//}
+
+	if (m_pActivityInicator != NULL)
 	{
-		m_pGauge->Pulse();
+		m_pActivityInicator->Start();
 	}
 }
 
@@ -592,9 +626,14 @@ void CDriverToolFrame::EnableAllButton()
 		m_pBtnUninstall->Enable(true);
 	}
 
-	if (m_pGauge != NULL)
+	//if (m_pGauge != NULL)
+	//{
+	//	m_pGauge->SetValue(0);
+	//}
+
+	if (m_pActivityInicator != NULL)
 	{
-		m_pGauge->SetValue(0);
+		m_pActivityInicator->Stop();
 	}
 }
 
@@ -603,6 +642,8 @@ void CDriverToolFrame::OnServiceControlComplete(wxThreadEvent & event)
 	wxString strControlRet = event.GetString();
 	m_pEdtShow->SetLabelText(strControlRet);
 	SetStatusText(strControlRet);
+
+	EnableAllButton();
 }
 
 void CDriverToolFrame::OnDropFile(wxDropFilesEvent & event)
@@ -803,6 +844,7 @@ void CDriverToolFrame::InitCollapsiblePane()
 
 		m_pRadioBoxStartOption = new wxRadioBox(m_pFirstPanel, ID_RADIOBOX_PAGE1, wxT("启动方式"), wxDefaultPosition, wxDefaultSize, strRadioBoxs, 0, wxRA_SPECIFY_COLS);
 		m_pRadioBoxStartOption->SetSelection(3);
+		m_pRadioBoxStartOption->SetHelpText(wxT("驱动的加载的优先级"));
 		m_pExtBoxSize1->Add(m_pRadioBoxStartOption, 0, wxALL | wxEXPAND, 5);
 
 		m_pBottomStaticBoxSizer = new wxStaticBoxSizer(wxVERTICAL, m_pFirstPanel, wxT("附加设备(非WDM驱动勿选)"));

@@ -18,8 +18,8 @@ wxThread::ExitCode CControlWorkerThread::Entry()
 {
 	wxString strNotify = "²Ù×÷Íê³É";
 	TCHAR buff[1024];
-	m_pFrame->DisableAllButton();
-	do 
+	//m_pFrame->DisableAllButton();
+	do
 	{
 		wxString strFile = m_pFrame->m_pEdtDriverPath->GetLabelText();
 		CServiceControl sc;
@@ -84,7 +84,7 @@ wxThread::ExitCode CControlWorkerThread::Entry()
 	event.SetString(strNotify);
 	wxQueueEvent(m_pFrame, event.Clone());
 
-	m_pFrame->EnableAllButton();
+	//m_pFrame->EnableAllButton();
 	return NULL;
 }
 

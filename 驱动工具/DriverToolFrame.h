@@ -4,6 +4,7 @@
 #include <wx\\collpane.h>
 #include <wx\\notebook.h>
 #include <wx\\spinbutt.h>
+#include <wx\\activityindicator.h>
 
 
 enum 
@@ -87,13 +88,14 @@ private:
 	wxStaticBoxSizer *m_pBottomBoxSizer;
 	wxStaticText* m_pStaticStatus;
 	wxTextCtrl* m_pEdtShow;
+	wxActivityIndicator* m_pActivityInicator;
 	wxStaticText* m_pStaticName;
 	
 
 	//wxBoxSizer* m_pOtherBoxSizer;
-	wxStaticBoxSizer* m_pOtherBoxSizer;
+	//wxStaticBoxSizer* m_pOtherBoxSizer;
 	wxButton* m_pBtnMore;
-	wxGauge* m_pGauge;
+	//wxGauge* m_pGauge;
 
 	//CExtendedFrame* m_pExtendFrame;
 
