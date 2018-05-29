@@ -755,8 +755,7 @@ void CDriverToolFrame::OnIoctlCodeChange(wxCommandEvent & event)
 			break;
 		}
 
-		TCHAR *p = nullptr;
-		ioctlInfo.ulData = _tcstol(strCode.c_str(), &p, 16);
+		ioctlInfo.ulData = _tcstoul(strCode.c_str(), nullptr, 16);
 	} while (0);
 
 	UpdateIoctlInfo(ioctlInfo);
