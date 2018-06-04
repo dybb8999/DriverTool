@@ -175,6 +175,7 @@ private:
 	void UpdateIoctlInfo(IOCTL_INFO& ioctlInfo);
 	void NotifyExtFrame();
 	void ClearCheckBox();
+	bool FileCopyToDriverFolder(wxString &strFileName);
 private:
 	wxDECLARE_EVENT_TABLE();
 };

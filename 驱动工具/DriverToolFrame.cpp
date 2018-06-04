@@ -376,6 +376,9 @@ void CDriverToolFrame::OnStartChange(wxCommandEvent & event)
 
 	HKEY hMainKey = NULL;
 	ULONG ulRet = 0;
+
+	wchar_t* pwszFullPath = nullptr;
+
 	do
 	{
 		if (m_szServiceName == wxT(""))
@@ -398,11 +401,55 @@ void CDriverToolFrame::OnStartChange(wxCommandEvent & event)
 		{
 			break;
 		}
+
+		if (nSelect <= 2)
+		{
+			pwszFullPath = new wchar_t[32767];
+			if (pwszFullPath == nullptr)
+			{
+				break;
+			}
+
+			//说明设置的自动启动，建议用户把该文件扔driver里面去
+			if (wxMessageBox(wxString("您要将驱动设置为自动启动，建议将文件放入System32\\Driver目录中。是否放置？"), wxString("提示"), wxYES_NO, this) == wxNO)
+			{
+				break;
+			}
+
+			if (FileCopyToDriverFolder(m_pEdtDriverPath->GetLabelText()) == false)
+			{
+				break;
+			}
+
+			size_t pos = m_pEdtDriverPath->GetLabelText().find_last_of('\\');
+			if (pos == wxString::npos)
+			{
+				break;
+			}
+
+			wxString strFileName(m_pEdtDriverPath->GetLabelText().c_str() + pos + 1);
+
+			wcscpy_s(pwszFullPath, 32767, L"\\SystemRoot\\System\\Drivers\\");
+			wcscat_s(pwszFullPath, 32767, strFileName.c_str());
+
+			ulRet = RegSetValueEx(hMainKey, TEXT("ImagePath"), 0, REG_EXPAND_SZ, (const PBYTE)pwszFullPath, (wcslen(pwszFullPath) + 1)*sizeof(wchar_t));
+			if (ulRet != ERROR_SUCCESS)
+			{
+				break;
+			}
+		}
+
 	} while (0);
 
 	if (hMainKey != NULL)
 	{
 		RegCloseKey(hMainKey);
+	}
+
+	if (pwszFullPath != nullptr)
+	{
+		delete[]pwszFullPath;
+		pwszFullPath = nullptr;
 	}
 }
 
@@ -1224,4 +1271,54 @@ void CDriverToolFrame::ClearCheckBox()
 	{
 		m_ppCheckBoxArray[i]->SetValue(false);
 	}
+}
+
+bool CDriverToolFrame::FileCopyToDriverFolder(wxString & strFileName)
+{
+	bool bRet = false;
+	wchar_t *pwszFullPath = nullptr;
+
+	do 
+	{
+		pwszFullPath = new wchar_t[32767];
+		if (pwszFullPath == nullptr)
+		{
+			break;
+		}
+		memset(pwszFullPath, 0, 32767);
+
+		size_t pos = strFileName.find_last_of('\\');
+		if (pos == wxString::npos)
+		{
+			break;
+		}
+
+		wxString strFile(strFileName.c_str() + pos + 1);
+		DWORD dwRet = 0;
+		dwRet = ExpandEnvironmentStringsW(L"%SystemRoot%", pwszFullPath, 32767);
+		if (dwRet == 0)
+		{
+			break;
+		}
+
+		wcscat_s(pwszFullPath, 32767, L"\\System32\\Drivers\\");
+		wcscat_s(pwszFullPath, 32767, strFile.c_str());
+
+		if (CopyFileW(strFileName.c_str(), pwszFullPath, FALSE) == FALSE)
+		{
+			wxMessageBox(wxString("文件复制失败"), wxString("失败"), wxOK, this);
+			break;
+		}
+
+		bRet = true;
+
+	} while (0);
+
+	if (pwszFullPath != nullptr)
+	{
+		delete[]pwszFullPath;
+		pwszFullPath = nullptr;
+	}
+
+	return bRet;
 }
