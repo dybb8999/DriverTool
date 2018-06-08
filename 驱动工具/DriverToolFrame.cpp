@@ -429,7 +429,7 @@ void CDriverToolFrame::OnStartChange(wxCommandEvent & event)
 
 			wxString strFileName(m_pEdtDriverPath->GetLabelText().c_str() + pos + 1);
 
-			wcscpy_s(pwszFullPath, 32767, L"\\SystemRoot\\System\\Drivers\\");
+			wcscpy_s(pwszFullPath, 32767, L"\\SystemRoot\\System32\\Drivers\\");
 			wcscat_s(pwszFullPath, 32767, strFileName.c_str());
 
 			ulRet = RegSetValueEx(hMainKey, TEXT("ImagePath"), 0, REG_EXPAND_SZ, (const PBYTE)pwszFullPath, (wcslen(pwszFullPath) + 1)*sizeof(wchar_t));
