@@ -248,7 +248,7 @@ void CDriverToolFrame::OnStart(wxCommandEvent & event)
 
 		CServiceControl sc;
 		sc.SetPath(szFile.c_str().AsWCharBuf().data());
-		if (sc.ImageCheck() == FALSE)
+		if (sc.ImageCheck() == -5)
 		{
 			if (wxMessageBox(wxT("目标文件格式和当前系统不符，是否继续加载？"), wxT("格式检查"), wxYES_NO, this) == wxNO)
 			{

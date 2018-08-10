@@ -264,9 +264,9 @@ TCHAR * CServiceControl::GetErrorStr(DWORD errorCode)
 	return strBuff;
 }
 
-BOOL CServiceControl::ImageCheck()
+ULONG CServiceControl::ImageCheck()
 {
-	DWORD dwRet = 0;
+	ULONG ulRet = 0;
 	unsigned char* buff = NULL;
 	FILE *fp = NULL;
 	do
@@ -279,6 +279,7 @@ BOOL CServiceControl::ImageCheck()
 
 		if (_tfopen_s(&fp, m_filePath, L"r") != 0)
 		{
+			ulRet = -1;
 			break;
 		}
 
@@ -290,32 +291,37 @@ BOOL CServiceControl::ImageCheck()
 		PIMAGE_DOS_HEADER dosHeader = (PIMAGE_DOS_HEADER)buff;
 		if (dosHeader->e_magic != IMAGE_DOS_SIGNATURE)
 		{
+			ulRet = -2;
 			break;
 		}
 
 		PIMAGE_NT_HEADERS32 ntHeaders = (PIMAGE_NT_HEADERS32)(buff + dosHeader->e_lfanew - 1);
 		if (ntHeaders->Signature != IMAGE_NT_SIGNATURE)
 		{
+			ulRet = -3;
 			break;
 		}
 
 		BOOL bIsWow64Process = FALSE;
 		if (IsWow64Process(GetCurrentProcess(), &bIsWow64Process) == 0)
 		{
+			ulRet = -4;
 			break;
 		}
 
 		if (ntHeaders->FileHeader.Machine == IMAGE_FILE_MACHINE_I386 && bIsWow64Process == TRUE)
 		{
+			ulRet = -5;
 			break;
 		}
 
 		if (ntHeaders->FileHeader.Machine == IMAGE_FILE_MACHINE_AMD64 && bIsWow64Process == FALSE)
 		{
+			ulRet = -5;
 			break;
 		}
 
-		dwRet = 1;
+		ulRet = 0;
 	} while (0);
 
 	if (buff != NULL)
@@ -330,5 +336,5 @@ BOOL CServiceControl::ImageCheck()
 		fp = NULL;
 	}
 
-	return dwRet;
+	return ulRet;
 }
