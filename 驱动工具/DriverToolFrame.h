@@ -18,6 +18,7 @@ enum
 	ID_BTN_UNINSTALL,
 	ID_EDT_SHOW,
 	ID_BTN_MORE,
+	ID_BTN_SUPPORT_MINIFILTER,
 	ID_GAUGE,
 	ID_EXTEND_FRAME,
 	ID_COLLAPSIBLEPANE,
@@ -108,10 +109,11 @@ private:
 	wxPanel *m_pFirstPanel;
 	wxBoxSizer *m_pExtBoxSize1;
 	wxRadioBox *m_pRadioBoxStartOption;
-	wxStaticBoxSizer *m_pBottomStaticBoxSizer;
-	wxGridSizer *m_pCheckBoxSizer;
-	wxCheckBox **m_ppCheckBoxArray;
 
+	//×°minifilter NDISµÄ¿ò
+	wxStaticBoxSizer *m_pDriverSuppertBoxSizer;
+	wxButton *m_pBtnSupportMiniFilter;
+	
 	//SecondPanel
 	wxFlexGridSizer *m_pFlexGridSizer;
 	wxPanel *m_pExtSecondPanel;
@@ -146,6 +148,13 @@ private:
 	wxTextCtrl *m_pEdtIoctlLayout;
 	wxStaticBitmap *m_pShowIoctlLayout;
 
+	//ThirdPanel
+	wxPanel *m_pExtThirdPanel;
+	wxBoxSizer *m_pExtBoxSizer3;
+	wxStaticBoxSizer *m_pBottomStaticBoxSizer;
+	wxGridSizer *m_pCheckBoxSizer;
+	wxCheckBox **m_ppCheckBoxArray;
+
 	wxString m_szServiceName;
 private:
 	void OnSelectFile(wxCommandEvent &event);
@@ -157,6 +166,7 @@ private:
 	void OnWindowMove(wxMoveEvent &event);
 	void OnStartChange(wxCommandEvent & event);
 	void OnFilterDriverNotify(wxCommandEvent & event);
+	void OnAddMinifilterSupport(wxCommandEvent & event);
 
 	void DisableAllButton();
 	void EnableAllButton();

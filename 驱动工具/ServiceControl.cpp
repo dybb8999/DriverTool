@@ -338,3 +338,152 @@ ULONG CServiceControl::ImageCheck()
 
 	return ulRet;
 }
+
+DWORD CServiceControl::MinifilterSupport()
+{
+	DWORD dwRet = 0;
+	LSTATUS lStatus = 0;
+
+	HKEY hKey = nullptr;
+	HKEY hKeyInstance = nullptr;
+	HKEY hKeyInstanceSub = nullptr;
+
+	wchar_t szRegSubPath[256];
+
+	do
+	{
+		swprintf_s(szRegSubPath, L"SYSTEM\\CurrentControlSet\\Services\\%s", m_serviceName);
+
+		lStatus = RegOpenKeyExW(
+			HKEY_LOCAL_MACHINE,
+			szRegSubPath,
+			NULL,
+			KEY_ALL_ACCESS | KEY_WOW64_64KEY,
+			&hKey);
+		if (ERROR_SUCCESS != lStatus)
+		{
+			dwRet = -1;
+			break;
+		}
+
+		//添加DependOnService REG_MULTI_SZ
+		lStatus = RegSetValueExW(
+			hKey,
+			L"DependOnService",
+			0,
+			REG_MULTI_SZ,
+			(PBYTE)L"FltMgr\0\0",
+			sizeof(L"FltMgr\0\0"));
+		if (ERROR_SUCCESS != lStatus)
+		{
+			dwRet = -1;
+			break;
+		}
+
+		lStatus = RegSetValueExW(
+			hKey,
+			L"Group",
+			0,
+			REG_SZ,
+			(PBYTE)L"FSFilter Activity Monitor",
+			sizeof(L"FSFilter Activity Monitor"));
+		if (ERROR_SUCCESS != lStatus)
+		{
+			dwRet = -1;
+			break;
+		}
+
+		DWORD dwCrateDisposition = 0;
+		//创建子项 Instances
+		lStatus = RegCreateKeyExW(
+			hKey,
+			L"Instances",
+			0,
+			NULL,
+			REG_OPTION_NON_VOLATILE,
+			KEY_ALL_ACCESS,
+			NULL,
+			&hKeyInstance,
+			&dwCrateDisposition);
+		if (ERROR_SUCCESS != lStatus)
+		{
+			dwRet = -1;
+			break;
+		}
+
+		std::wstring wstrInstanceName = m_serviceName;
+		wstrInstanceName += L" Instance";
+
+		lStatus = RegSetValueExW(
+			hKeyInstance,
+			L"DefaultInstance",
+			0,
+			REG_SZ,
+			(const PBYTE)wstrInstanceName.c_str(),
+			(wstrInstanceName.length() + 1) * sizeof(wchar_t));
+		if (ERROR_SUCCESS != lStatus)
+		{
+			dwRet = -1;
+			break;
+		}
+
+		lStatus = RegCreateKeyExW(
+			hKeyInstance,
+			wstrInstanceName.c_str(),
+			0,
+			NULL,
+			REG_OPTION_NON_VOLATILE,
+			KEY_ALL_ACCESS,
+			NULL,
+			&hKeyInstanceSub,
+			&dwCrateDisposition
+		);
+		if (ERROR_SUCCESS != lStatus)
+		{
+			dwRet = -1;
+			break;
+		}
+
+		lStatus = RegSetValueExW(
+			hKeyInstanceSub,
+			L"Altitude",
+			0,
+			REG_SZ,
+			(const PBYTE)L"370090",
+			sizeof(L"370090"));
+		if (ERROR_SUCCESS != lStatus)
+		{
+			dwRet = -1;
+			break;
+		}
+
+		DWORD dwFlages = 0;
+		lStatus = RegSetValueExW(
+			hKeyInstanceSub,
+			L"Flags",
+			0,
+			REG_DWORD,
+			(const PBYTE)&dwFlages,
+			sizeof(dwFlages));
+		if (ERROR_SUCCESS != lStatus)
+		{
+			dwRet = -1;
+			break;
+		}
+
+	} while (false);
+
+	if (hKeyInstance != nullptr)
+	{
+		RegCloseKey(hKeyInstance);
+		hKeyInstance = nullptr;
+	}
+
+	if (hKeyInstanceSub != nullptr)
+	{
+		RegCloseKey(hKeyInstanceSub);
+		hKeyInstanceSub = nullptr;
+	}
+
+	return dwRet;
+}

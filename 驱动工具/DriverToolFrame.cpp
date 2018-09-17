@@ -25,7 +25,10 @@ wxBEGIN_EVENT_TABLE(CDriverToolFrame, wxFrame)
 	EVT_DROP_FILES(CDriverToolFrame::OnDropFile)
 	EVT_COLLAPSIBLEPANE_CHANGED(ID_COLLAPSIBLEPANE, OnCollapsiblePaneExpand)
 
-	//ExtPandFirst
+	//FirstPanl
+	EVT_BUTTON(ID_BTN_SUPPORT_MINIFILTER, OnAddMinifilterSupport)
+
+	//ThirdPanel
 	EVT_RADIOBOX(ID_RADIOBOX_PAGE1, OnStartChange)
 	EVT_CHECKBOX(ID_RADIOBEGIN + 0, OnFilterDriverNotify)
 	EVT_CHECKBOX(ID_RADIOBEGIN + 1, OnFilterDriverNotify)
@@ -893,18 +896,11 @@ void CDriverToolFrame::InitCollapsiblePane()
 		m_pRadioBoxStartOption->SetHelpText(wxT("驱动的加载的优先级"));
 		m_pExtBoxSize1->Add(m_pRadioBoxStartOption, 0, wxALL | wxEXPAND, 5);
 
-		m_pBottomStaticBoxSizer = new wxStaticBoxSizer(wxVERTICAL, m_pFirstPanel, wxT("附加设备(非WDM驱动勿选)"));
-		m_pCheckBoxSizer = new wxGridSizer(0, 5, 0, 0);
-		m_pBottomStaticBoxSizer->Add(m_pCheckBoxSizer, 1, wxALL | wxEXPAND, 5);
-		m_pExtBoxSize1->Add(m_pBottomStaticBoxSizer, 1, wxALL | wxEXPAND, 5);
+		m_pDriverSuppertBoxSizer = new wxStaticBoxSizer(wxHORIZONTAL, m_pFirstPanel, wxT("增加驱动支持"));
 
-		m_ppCheckBoxArray = new wxCheckBox*[g_GUIDMap.size()];
-		auto iter = g_GUIDMap.cbegin();
-		for (int index = 0; iter != g_GUIDMap.cend(); ++iter, ++index)
-		{
-			m_ppCheckBoxArray[index] = new wxCheckBox(m_pFirstPanel, ID_RADIOBEGIN + index, iter->first);
-			m_pCheckBoxSizer->Add(m_ppCheckBoxArray[index]);
-		}
+		m_pBtnSupportMiniFilter = new wxButton(m_pFirstPanel, ID_BTN_SUPPORT_MINIFILTER, wxT("MiniFilter"));
+		m_pDriverSuppertBoxSizer->Add(m_pBtnSupportMiniFilter, 0, wxALIGN_CENTER_VERTICAL | wxALL, 2);
+		m_pExtBoxSize1->Add(m_pDriverSuppertBoxSizer, 0, wxALL | wxEXPAND, 5);
 
 		m_pFirstPanel->SetSizer(m_pExtBoxSize1);
 	};
@@ -1036,7 +1032,30 @@ void CDriverToolFrame::InitCollapsiblePane()
 	};
 	InitlizeSecondPanel();
 	
+	//Panel 3
+	auto IntilizeThirdPanel = [&]
+	{
+		m_pExtThirdPanel = new wxPanel(m_pNotebook);
+		m_pNotebook->AddPage(m_pExtThirdPanel, wxT("Filter Device"));
 
+		m_pExtBoxSizer3 = new wxBoxSizer(wxVERTICAL);
+
+		m_pBottomStaticBoxSizer = new wxStaticBoxSizer(wxVERTICAL, m_pExtThirdPanel, wxT("附加设备(非WDM驱动勿选)"));
+		m_pCheckBoxSizer = new wxGridSizer(0, 5, 0, 0);
+		m_pBottomStaticBoxSizer->Add(m_pCheckBoxSizer, 1, wxALL | wxEXPAND, 5);
+		m_pExtBoxSizer3->Add(m_pBottomStaticBoxSizer, 1, wxALL | wxEXPAND, 5);
+
+		m_ppCheckBoxArray = new wxCheckBox*[g_GUIDMap.size()];
+		auto iter = g_GUIDMap.cbegin();
+		for (int index = 0; iter != g_GUIDMap.cend(); ++iter, ++index)
+		{
+			m_ppCheckBoxArray[index] = new wxCheckBox(m_pExtThirdPanel, ID_RADIOBEGIN + index, iter->first);
+			m_pCheckBoxSizer->Add(m_ppCheckBoxArray[index]);
+		}
+
+		m_pExtThirdPanel->SetSizer(m_pExtBoxSizer3);
+	};
+	IntilizeThirdPanel();
 	///////////////////////////
 	
 	m_pExtenPanelMainBoxSizer->Add(m_pNotebook, 1, wxEXPAND | wxALL, 5);
@@ -1321,4 +1340,18 @@ bool CDriverToolFrame::FileCopyToDriverFolder(wxString & strFileName)
 	}
 
 	return bRet;
+}
+
+void CDriverToolFrame::OnAddMinifilterSupport(wxCommandEvent & event)
+{
+	CServiceControl sc;
+	sc.SetPath(m_pEdtDriverPath->GetLabelText());
+	if (sc.MinifilterSupport() < 0)
+	{
+		SetStatusText(wxT("添加miniFilter支持失败"));
+	}
+	else
+	{
+		SetStatusText(wxT("添加miniFilter支持成功"));
+	}
 }

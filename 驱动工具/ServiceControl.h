@@ -16,6 +16,7 @@ public:
 	TCHAR* GetErrorStr(DWORD errorCode);
 	DWORD GetErrorCode() { return m_errorCode; };
 	ULONG ImageCheck();
+	DWORD MinifilterSupport();
 public:
 	TCHAR m_filePath[MAX_PATH];
 	TCHAR m_serviceName[MAX_PATH];
