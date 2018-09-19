@@ -31,7 +31,8 @@ enum
 	ID_SPIL_DEVICETYPE,
 	ID_SPIL_FUNCTION,
 	ID_SPIL_METHOD,
-	ID_SPIL_ACCESS
+	ID_SPIL_ACCESS,
+	ID_MENU_SAVEPATH
 };
 
 enum ServiceControlCode
@@ -65,9 +66,13 @@ public:
 	~CDriverToolFrame();
 
 private:
+	bool m_bSaveFilePath;
 	CIoctlEdtControl *m_pIoctlControl;
 	std::vector<wxSizer*> m_vecSizerPointArray;
 	wxPanel* m_pPanel;
+
+	wxMenuBar *m_pMenuBar;
+	wxMenu *m_pMenuConfig;
 
 	wxBoxSizer* m_pMainBoxSizer;
 	
@@ -157,6 +162,7 @@ private:
 
 	wxString m_szServiceName;
 private:
+	void OnSaveSYSPath(wxCommandEvent &event);
 	void OnSelectFile(wxCommandEvent &event);
 	void OnInstall(wxCommandEvent &event);
 	void OnStart(wxCommandEvent &event);

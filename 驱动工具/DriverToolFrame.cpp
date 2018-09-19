@@ -10,11 +10,14 @@
 #include <cassert>
 #include <wx/fontutil.h>
 #include "IoctlEdtControl.h"
+#include "ConfigManager.h"
 
 wxDEFINE_EVENT(wxEVT_MY_CUSTOM_COMMAND, wxCommandEvent);
 
 
 wxBEGIN_EVENT_TABLE(CDriverToolFrame, wxFrame)
+
+
 	EVT_BUTTON(ID_BTN_SELECTPATH, CDriverToolFrame::OnSelectFile)
 	EVT_BUTTON(ID_BTN_INSTALL, CDriverToolFrame::OnInstall)
 	EVT_BUTTON(ID_BTN_START, CDriverToolFrame::OnStart)
@@ -96,6 +99,10 @@ std::map<wxString, wxString> g_GUIDMap;
 CDriverToolFrame::CDriverToolFrame() :wxFrame(NULL, wxID_ANY, wxT("驱动工具"), wxDefaultPosition, wxDefaultSize, wxSYSTEM_MENU | wxMINIMIZE_BOX | wxCLOSE_BOX | wxCAPTION | wxCLIP_CHILDREN)
 {
 	InitWDMFilterData();
+
+	CConfigManager* pConfigManager = CConfigManager::GetInstances();
+	pConfigManager->LoadConfig();
+
 	wxFont font;
 	font.Create(13, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("微软雅黑"));
 	SetIcon(wxICON(icon));
@@ -104,6 +111,15 @@ CDriverToolFrame::CDriverToolFrame() :wxFrame(NULL, wxID_ANY, wxT("驱动工具"), w
 
 	this->SetBackgroundColour(wxColor(255, 255, 255));
 	this->DragAcceptFiles(true);
+
+	m_pMenuBar = new wxMenuBar;
+	m_pMenuConfig = new wxMenu;
+	m_pMenuConfig->AppendCheckItem(ID_MENU_SAVEPATH, wxT("保存文件路径"), wxT("会把上次操作的文件路径保存在注册表，方便下次启动使用"));
+	
+	m_pMenuBar->Append(m_pMenuConfig, wxT("设置"));
+	SetMenuBar(m_pMenuBar);
+
+	Bind(wxEVT_MENU, &CDriverToolFrame::OnSaveSYSPath, this, ID_MENU_SAVEPATH);
 
 	m_pMainBoxSizer = new wxBoxSizer(wxVERTICAL);
 
@@ -115,9 +131,11 @@ CDriverToolFrame::CDriverToolFrame() :wxFrame(NULL, wxID_ANY, wxT("驱动工具"), w
 
 	m_pEdtDriverPath = new wxTextCtrl(this, ID_EDIT_FILEPATH, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
 	m_pEdtDriverPath->SetFont(font);
+	m_pEdtDriverPath->SetLabel(pConfigManager->GetLastUsedFile());
 	m_pStaticBoxTopSizer->Add(m_pEdtDriverPath, 1, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 	m_pBtnSelectPath = new wxButton(this, ID_BTN_SELECTPATH, wxT("..."), wxDefaultPosition, wxSize(50,30));
+	m_pBtnSelectPath->SetHelpText(wxT("选择驱动文件"));
 	m_pStaticBoxTopSizer->Add(m_pBtnSelectPath, 0, wxALIGN_CENTRE_VERTICAL | wxALL, 5);
 
 	m_pChkBoxWindowTop = new wxCheckBox(this, ID_CHK_WINDOWTOP, wxT("窗口置顶"));
@@ -179,6 +197,12 @@ CDriverToolFrame::CDriverToolFrame() :wxFrame(NULL, wxID_ANY, wxT("驱动工具"), w
 
 CDriverToolFrame::~CDriverToolFrame()
 {
+}
+
+void CDriverToolFrame::OnSaveSYSPath(wxCommandEvent & event)
+{
+	m_bSaveFilePath = m_pMenuConfig->IsChecked(ID_MENU_SAVEPATH);
+	return;
 }
 
 void CDriverToolFrame::OnSelectFile(wxCommandEvent & event)
@@ -694,6 +718,9 @@ void CDriverToolFrame::OnServiceControlComplete(wxThreadEvent & event)
 	SetStatusText(strControlRet);
 
 	EnableAllButton();
+
+	//保存这次操作的文件路径
+	CConfigManager::GetInstances()->SetLastUsedFile(m_pEdtDriverPath->GetLabel().c_str().AsWCharBuf().data());
 }
 
 void CDriverToolFrame::OnDropFile(wxDropFilesEvent & event)

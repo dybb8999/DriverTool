@@ -169,6 +169,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ConfigManager.h" />
     <ClInclude Include="ControlWorkerThread.h" />
     <ClInclude Include="ddpar.h" />
     <ClInclude Include="DriverToolFrame.h" />
@@ -184,6 +185,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ConfigManager.cpp" />
     <ClCompile Include="ControlWorkerThread.cpp" />
     <ClCompile Include="DriverToolFrame.cpp" />
     <ClCompile Include="IoctlEdtControl.cpp" />
