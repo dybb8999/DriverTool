@@ -114,12 +114,12 @@ CDriverToolFrame::CDriverToolFrame() :wxFrame(NULL, wxID_ANY, wxT("驱动工具"), w
 
 	m_pMenuBar = new wxMenuBar;
 	m_pMenuConfig = new wxMenu;
-	m_pMenuConfig->AppendCheckItem(ID_MENU_SAVEPATH, wxT("保存文件路径"), wxT("会把上次操作的文件路径保存在注册表，方便下次启动使用"));
+	m_pMenuConfig->Append(ID_MENU_CLEARPATH, wxT("清除保存文件路径"), wxT("清除注册表中的保存路径"));
 	
 	m_pMenuBar->Append(m_pMenuConfig, wxT("设置"));
 	SetMenuBar(m_pMenuBar);
 
-	Bind(wxEVT_MENU, &CDriverToolFrame::OnSaveSYSPath, this, ID_MENU_SAVEPATH);
+	Bind(wxEVT_MENU, &CDriverToolFrame::OnClearSYSPath, this, ID_MENU_CLEARPATH);
 
 	m_pMainBoxSizer = new wxBoxSizer(wxVERTICAL);
 
@@ -199,9 +199,10 @@ CDriverToolFrame::~CDriverToolFrame()
 {
 }
 
-void CDriverToolFrame::OnSaveSYSPath(wxCommandEvent & event)
+void CDriverToolFrame::OnClearSYSPath(wxCommandEvent & event)
 {
-	m_bSaveFilePath = m_pMenuConfig->IsChecked(ID_MENU_SAVEPATH);
+	CConfigManager::GetInstances()->SetLastUsedFile(L"");
+	m_pEdtDriverPath->SetLabel(wxT(""));
 	return;
 }
 

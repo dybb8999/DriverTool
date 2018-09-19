@@ -32,7 +32,7 @@ enum
 	ID_SPIL_FUNCTION,
 	ID_SPIL_METHOD,
 	ID_SPIL_ACCESS,
-	ID_MENU_SAVEPATH
+	ID_MENU_CLEARPATH
 };
 
 enum ServiceControlCode
@@ -162,7 +162,7 @@ private:
 
 	wxString m_szServiceName;
 private:
-	void OnSaveSYSPath(wxCommandEvent &event);
+	void OnClearSYSPath(wxCommandEvent &event);
 	void OnSelectFile(wxCommandEvent &event);
 	void OnInstall(wxCommandEvent &event);
 	void OnStart(wxCommandEvent &event);
