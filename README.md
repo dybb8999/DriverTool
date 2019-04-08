@@ -3,6 +3,9 @@ This is a Windows desktop exe, it can help windows driver developer to do someth
 For example we have a nt mode driver, we need register and start, normal wo should build registry and use commond:sc start xxx
 Now we can use this tool.
 
+[![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
+[![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
+
 ## Default Style:
 ![Default Style](https://github.com/dybb8999/DriverTool/blob/master/Picture/Default.jpg)
 
