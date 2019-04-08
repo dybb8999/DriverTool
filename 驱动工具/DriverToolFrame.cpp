@@ -25,6 +25,7 @@ wxBEGIN_EVENT_TABLE(CDriverToolFrame, wxFrame)
 	EVT_BUTTON(ID_BTN_START, CDriverToolFrame::OnStart)
 	EVT_BUTTON(ID_BTN_STOP, CDriverToolFrame::OnStop)
 	EVT_BUTTON(ID_BTN_UNINSTALL, CDriverToolFrame::OnUnInstall)
+	EVT_BUTTON(ID_BTN_NEED_ADMIN, CDriverToolFrame::OnStartElevatedProcess)
 	EVT_THREAD(THREAD_SERVER_CONTROL_COMPLETE, CDriverToolFrame::OnServiceControlComplete)
 	EVT_CHECKBOX(ID_CHK_WINDOWTOP, CDriverToolFrame::OnWindowTop)
 	EVT_DROP_FILES(CDriverToolFrame::OnDropFile)
@@ -161,6 +162,15 @@ CDriverToolFrame::CDriverToolFrame() :wxFrame(NULL, wxID_ANY, wxT("驱动工具"), w
 	m_pBtnUninstall->SetFont(font);
 	m_pMiddleStaticBoxSizer->Add(m_pBtnUninstall, 1, wxALIGN_CENTRE_VERTICAL | wxALL, 5);
 
+	if (IsUserAnAdmin() == false)
+	{
+		m_pBtnAuthNeed = new wxButton(this, ID_BTN_NEED_ADMIN, wxT("请求管理员权限"));
+		m_pBtnAuthNeed->SetFont(font);
+		m_pBtnAuthNeed->SetAuthNeeded(true);
+		m_pMiddleStaticBoxSizer->Add(m_pBtnAuthNeed, 1, wxALIGN_CENTRE_VERTICAL | wxALL, 5);
+		SetStatusText(wxT("当前程序没有管理员权限，请使用管理员权限启动"));
+	}
+
 	m_pBottomBoxSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, wxT("状态"));
 	m_pStaticStatus = new wxStaticText(this, wxID_ANY, wxT("状态:"));
 	m_pStaticStatus->SetFont(font);
@@ -195,12 +205,6 @@ CDriverToolFrame::CDriverToolFrame() :wxFrame(NULL, wxID_ANY, wxT("驱动工具"), w
 	this->SetSizer(m_pMainBoxSizer);
 	m_pMainBoxSizer->SetMinSize(wxSize(600, 300));
 	m_pMainBoxSizer->SetSizeHints(this);
-
-	//检测Admin权限
-	if (IsUserAnAdmin() == FALSE)
-	{
-		SetStatusText(wxT("当前程序没有管理员权限，请使用管理员权限启动"));
-	}
 }
 
 CDriverToolFrame::~CDriverToolFrame()
@@ -386,6 +390,63 @@ void CDriverToolFrame::OnUnInstall(wxCommandEvent & event)
 
 		DisableAllButton();
 	} while (0);
+}
+
+void CDriverToolFrame::OnStartElevatedProcess(wxCommandEvent & event)
+{
+	TCHAR* pModulePath = (TCHAR*)calloc(32767, sizeof(TCHAR));
+	DWORD dwRet = 0;
+	do
+	{
+		this->Show(false);
+		if (pModulePath == nullptr)
+		{
+			break;
+		}
+
+		dwRet = GetModuleFileName(GetModuleHandle(NULL), pModulePath, 32767);
+		if (dwRet == 0)
+		{
+			break;
+		}
+
+		SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
+
+		// Ask for privileges elevation.
+		sei.lpVerb = TEXT("runas");
+
+		// Pass the application to start with high privileges.
+		sei.lpFile = pModulePath;
+
+		// Pass the command line.
+		sei.lpParameters = nullptr;
+
+		// Don't forget this parameter otherwise the window will be hidden.
+		sei.nShow = SW_SHOWNORMAL;
+
+		ShellExecuteEx(&sei);
+		if (GetLastError() != 0)
+		{
+			break;
+		}
+
+		//这里内存其实可以不用释放
+		if (pModulePath != nullptr)
+		{
+			free(pModulePath);
+			pModulePath = nullptr;
+		}
+
+		ExitProcess(0);
+	} while (false);
+	
+	if (pModulePath != nullptr)
+	{
+		free(pModulePath);
+		pModulePath = nullptr;
+	}
+
+	this->Show(true);
 }
 
 void CDriverToolFrame::OnWindowTop(wxCommandEvent & event)

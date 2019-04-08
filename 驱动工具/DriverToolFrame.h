@@ -16,6 +16,7 @@ enum
 	ID_BTN_START,
 	ID_BTN_STOP,
 	ID_BTN_UNINSTALL,
+	ID_BTN_NEED_ADMIN,
 	ID_EDT_SHOW,
 	ID_BTN_MORE,
 	ID_BTN_SUPPORT_MINIFILTER,
@@ -89,6 +90,7 @@ private:
 	wxButton* m_pBtnStart;
 	wxButton* m_pBtnStop;
 	wxButton* m_pBtnUninstall;
+	wxButton* m_pBtnAuthNeed;
 
 	//wxBoxSizer* m_pBottomBoxSizer;
 	wxStaticBoxSizer *m_pBottomBoxSizer;
@@ -168,6 +170,7 @@ private:
 	void OnStart(wxCommandEvent &event);
 	void OnStop(wxCommandEvent &event);
 	void OnUnInstall(wxCommandEvent &event);
+	void OnStartElevatedProcess(wxCommandEvent &event);
 	void OnWindowTop(wxCommandEvent &event);
 	void OnWindowMove(wxMoveEvent &event);
 	void OnStartChange(wxCommandEvent & event);
