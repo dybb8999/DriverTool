@@ -11,6 +11,8 @@
 #include <wx/fontutil.h>
 #include "IoctlEdtControl.h"
 #include "ConfigManager.h"
+#include <Shlobj.h>
+#pragma comment(lib, "SHELL32.LIB")
 
 wxDEFINE_EVENT(wxEVT_MY_CUSTOM_COMMAND, wxCommandEvent);
 
@@ -193,6 +195,12 @@ CDriverToolFrame::CDriverToolFrame() :wxFrame(NULL, wxID_ANY, wxT("驱动工具"), w
 	this->SetSizer(m_pMainBoxSizer);
 	m_pMainBoxSizer->SetMinSize(wxSize(600, 300));
 	m_pMainBoxSizer->SetSizeHints(this);
+
+	//检测Admin权限
+	if (IsUserAnAdmin() == FALSE)
+	{
+		SetStatusText(wxT("当前程序没有管理员权限，请使用管理员权限启动"));
+	}
 }
 
 CDriverToolFrame::~CDriverToolFrame()
