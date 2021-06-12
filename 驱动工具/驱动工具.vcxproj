@@ -81,6 +81,7 @@
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>F:\Software Library\wxWidgets-3.1.1\include;F:\Software Library\wxWidgets-3.1.1\lib\vc_lib\mswu;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>E:\Microsoft Visual Studio 14.0\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
