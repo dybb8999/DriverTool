@@ -235,7 +235,7 @@ void CDriverToolFrame::OnSelectFile(wxCommandEvent & event)
 		}
 
 		wxString szPath = fileDialog.GetPath();
-		m_pEdtDriverPath->SetLabelText(szPath);
+		m_pEdtDriverPath->SetValue(szPath);
 
 		ClearCheckBox();
 		NotifyExtFrame();
@@ -249,24 +249,24 @@ void CDriverToolFrame::OnInstall(wxCommandEvent & event)
 	{
 		if (szFile == wxT(""))
 		{
-			m_pEdtShow->SetLabelText(wxT("请选择文件"));
+			m_pEdtShow->SetValue(wxT("请选择文件"));
 			break;
 		}
 
 		CControlWorkerThread *pThread = new CControlWorkerThread(this);
 		if (pThread->Create() != wxTHREAD_NO_ERROR)
 		{
-			m_pEdtShow->SetLabelText(wxT("线程创建失败"));
+			m_pEdtShow->SetValue(wxT("线程创建失败"));
 			break;
 		}
 
-		m_pEdtShow->SetLabelText(wxT("正在安装服务......"));
+		m_pEdtShow->SetValue(wxT("正在安装服务......"));
 
 		pThread->m_ulMessageID = INSTALL;
 
 		if (pThread->Run() != wxTHREAD_NO_ERROR)
 		{
-			m_pEdtShow->SetLabelText(wxT("线程启动失败"));
+			m_pEdtShow->SetValue(wxT("线程启动失败"));
 			break;
 		}
 
@@ -277,12 +277,12 @@ void CDriverToolFrame::OnInstall(wxCommandEvent & event)
 
 void CDriverToolFrame::OnStart(wxCommandEvent & event)
 {
-	wxString szFile = m_pEdtDriverPath->GetLabelText();
+	wxString szFile = m_pEdtDriverPath->GetValue();
 	do
 	{
 		if (szFile == "")
 		{
-			m_pEdtShow->SetLabelText(wxT("请选择文件"));
+			m_pEdtShow->SetValue(wxT("请选择文件"));
 			break;
 		}
 
@@ -299,18 +299,18 @@ void CDriverToolFrame::OnStart(wxCommandEvent & event)
 		CControlWorkerThread *pThread = new CControlWorkerThread(this);
 		if (pThread->Create() != wxTHREAD_NO_ERROR)
 		{
-			m_pEdtShow->SetLabelText(wxT("线程创建失败"));
+			m_pEdtShow->SetValue(wxT("线程创建失败"));
 			break;
 		}
 
-		m_pEdtShow->SetLabelText(wxT("正在启动服务......"));
+		m_pEdtShow->SetValue(wxT("正在启动服务......"));
 
 		pThread->m_ulMessageID = START;
 
 		if (pThread->Run() != wxTHREAD_NO_ERROR)
 		{
 			SetStatusText(wxT("线程启动失败"));
-			m_pEdtShow->SetLabelText(wxT("线程启动失败"));
+			m_pEdtShow->SetValue(wxT("线程启动失败"));
 			break;
 		}
 
@@ -320,23 +320,23 @@ void CDriverToolFrame::OnStart(wxCommandEvent & event)
 
 void CDriverToolFrame::OnStop(wxCommandEvent & event)
 {
-	wxString szFile = m_pEdtDriverPath->GetLabelText();
+	wxString szFile = m_pEdtDriverPath->GetValue();
 	do
 	{
 		if (szFile == "")
 		{
-			m_pEdtShow->SetLabelText(wxT("请选择文件"));
+			m_pEdtShow->SetValue(wxT("请选择文件"));
 			break;
 		}
 
 		CControlWorkerThread *pThread = new CControlWorkerThread(this);
 		if (pThread->Create() != wxTHREAD_NO_ERROR)
 		{
-			m_pEdtShow->SetLabelText(wxT("线程创建失败"));
+			m_pEdtShow->SetValue(wxT("线程创建失败"));
 			break;
 		}
 
-		m_pEdtShow->SetLabelText(wxT("正在停止服务......"));
+		m_pEdtShow->SetValue(wxT("正在停止服务......"));
 
 		pThread->m_ulMessageID = STOP;
 
@@ -347,7 +347,7 @@ void CDriverToolFrame::OnStop(wxCommandEvent & event)
 
 		if (pThread->Run() != wxTHREAD_NO_ERROR)
 		{
-			m_pEdtShow->SetLabelText(wxT("线程启动失败"));
+			m_pEdtShow->SetValue(wxT("线程启动失败"));
 			break;
 		}
 
@@ -357,23 +357,23 @@ void CDriverToolFrame::OnStop(wxCommandEvent & event)
 
 void CDriverToolFrame::OnUnInstall(wxCommandEvent & event)
 {
-	wxString szFile = m_pEdtDriverPath->GetLabelText();
+	wxString szFile = m_pEdtDriverPath->GetValue();
 	do
 	{
 		if (szFile == "")
 		{
-			m_pEdtShow->SetLabelText(wxT("请选择文件"));
+			m_pEdtShow->SetValue(wxT("请选择文件"));
 			break;
 		}
 
 		CControlWorkerThread *pThread = new CControlWorkerThread(this);
 		if (pThread->Create() != wxTHREAD_NO_ERROR)
 		{
-			m_pEdtShow->SetLabelText(wxT("线程创建失败"));
+			m_pEdtShow->SetValue(wxT("线程创建失败"));
 			break;
 		}
 
-		m_pEdtShow->SetLabelText(wxT("正在停止服务......"));
+		m_pEdtShow->SetValue(wxT("正在停止服务......"));
 
 		pThread->m_ulMessageID = UNINSTALL;
 
@@ -384,7 +384,7 @@ void CDriverToolFrame::OnUnInstall(wxCommandEvent & event)
 
 		if (pThread->Run() != wxTHREAD_NO_ERROR)
 		{
-			m_pEdtShow->SetLabelText(wxT("线程启动失败"));
+			m_pEdtShow->SetValue(wxT("线程启动失败"));
 			break;
 		}
 
@@ -513,18 +513,18 @@ void CDriverToolFrame::OnStartChange(wxCommandEvent & event)
 				break;
 			}
 
-			if (FileCopyToDriverFolder(m_pEdtDriverPath->GetLabelText()) == false)
+			if (FileCopyToDriverFolder(m_pEdtDriverPath->GetValue()) == false)
 			{
 				break;
 			}
 
-			size_t pos = m_pEdtDriverPath->GetLabelText().find_last_of('\\');
+			size_t pos = m_pEdtDriverPath->GetValue().find_last_of('\\');
 			if (pos == wxString::npos)
 			{
 				break;
 			}
 
-			wxString strFileName(m_pEdtDriverPath->GetLabelText().c_str() + pos + 1);
+			wxString strFileName(m_pEdtDriverPath->GetValue().c_str() + pos + 1);
 
 			wcscpy_s(pwszFullPath, 32767, L"\\SystemRoot\\System32\\Drivers\\");
 			wcscat_s(pwszFullPath, 32767, strFileName.c_str());
@@ -784,7 +784,7 @@ void CDriverToolFrame::EnableAllButton()
 void CDriverToolFrame::OnServiceControlComplete(wxThreadEvent & event)
 {
 	wxString strControlRet = event.GetString();
-	m_pEdtShow->SetLabelText(strControlRet);
+	m_pEdtShow->SetValue(strControlRet);
 	SetStatusText(strControlRet);
 
 	EnableAllButton();
@@ -797,7 +797,7 @@ void CDriverToolFrame::OnDropFile(wxDropFilesEvent & event)
 {
 	if (event.GetNumberOfFiles() > 0)
 	{
-		m_pEdtDriverPath->SetLabelText(event.GetFiles()[0]);
+		m_pEdtDriverPath->SetValue(event.GetFiles()[0]);
 
 		ClearCheckBox();
 		NotifyExtFrame();
@@ -897,10 +897,10 @@ void CDriverToolFrame::OnIoctlCodeChange(wxCommandEvent & event)
 	IOCTL_INFO ioctlInfo = { 0 };
 	do 
 	{
-		if (pCheckCode() == false)
-		{
-			break;
-		}
+		// if (pCheckCode() == false)
+		// {
+		// 	break;
+		// }
 
 		ioctlInfo.ulData = _tcstoul(strCode.c_str(), nullptr, 16);
 	} while (0);
@@ -1013,33 +1013,37 @@ void CDriverToolFrame::InitCollapsiblePane()
 		m_pIoctlInfoSizer = new wxStaticBoxSizer(wxVERTICAL, m_pExtSecondPanel, wxT("IOCTL信息"));
 
 		//
-		wxSizer* pSizer = new wxBoxSizer(wxHORIZONTAL);
-		m_vecSizerPointArray.push_back(pSizer);
+		auto pFlexGridSize = new wxFlexGridSizer(2);
+		pFlexGridSize->AddGrowableCol(1);
 
 		m_pStaticIoctlNumber = new wxStaticText(m_pExtSecondPanel, wxID_ANY, wxT("Ioctl Code:"));
-		pSizer->Add(m_pStaticIoctlNumber, 0, wxALIGN_CENTER_VERTICAL | wxALL, 2);
+		pFlexGridSize->Add(m_pStaticIoctlNumber, wxSizerFlags().CenterVertical().Border());
+		
+		wxSizer* pSizer = new wxBoxSizer(wxHORIZONTAL);
+		m_vecSizerPointArray.push_back(pSizer);
 		
 		m_pEdtShowIoctlCode = new wxTextCtrl(m_pExtSecondPanel, ID_EDTSHOWIOCTL);
-		m_pEdtShowIoctlCode->SetMaxLength(8);
-		pSizer->Add(m_pEdtShowIoctlCode, 0, wxALIGN_CENTER_VERTICAL | wxALL, 3);
+		// m_pEdtShowIoctlCode->SetMaxLength(8);
+		pSizer->Add(m_pEdtShowIoctlCode, 0, wxALIGN_CENTER_VERTICAL, 3);
 
 		m_pStaticNumberOfIoctl = new wxStaticText(m_pExtSecondPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE_HORIZONTAL);
-		pSizer->Add(m_pStaticNumberOfIoctl, 1, wxALIGN_CENTER_VERTICAL | wxALL, 2);
+		pSizer->Add(m_pStaticNumberOfIoctl, 1, wxALIGN_CENTER_VERTICAL, 2);
+		pFlexGridSize->Add(pSizer, wxSizerFlags(1).Expand().CenterVertical().Border(wxUP | wxDOWN));
 
-		m_pIoctlInfoSizer->Add(pSizer, 0, wxGROW | wxALL, 0);
+		// m_pIoctlInfoSizer->Add(pFlexGridSize, 0, wxGROW | wxALL, 0);
 
 		//
-		pSizer = new wxBoxSizer(wxHORIZONTAL);
-		m_vecSizerPointArray.push_back(pSizer);
+		//pSizer = new wxBoxSizer(wxHORIZONTAL);
+		//m_vecSizerPointArray.push_back(pSizer);
 
 		m_pStaticMnemonic = new wxStaticText(m_pExtSecondPanel, wxID_ANY, wxT("Mnemonic:"));
-
-		pSizer->Add(m_pStaticMnemonic, 0, wxALIGN_CENTRE_VERTICAL | wxALL, 2);
+		pFlexGridSize->Add(m_pStaticMnemonic, wxSizerFlags().CenterVertical().Border());
+		// pSizer->Add(m_pStaticMnemonic, 0, wxALIGN_CENTRE_VERTICAL | wxALL, 2);
 
 		m_pEdtMnemonic = new wxTextCtrl(m_pExtSecondPanel, ID_EDTSHOWMNEMONIC);
-		pSizer->Add(m_pEdtMnemonic, 1, wxALIGN_CENTRE_VERTICAL | wxALL, 2);
+		pFlexGridSize->Add(m_pEdtMnemonic, wxSizerFlags(1).Expand().CenterVertical());
 
-		m_pIoctlInfoSizer->Add(pSizer, 0, wxGROW | wxALL, 0);
+		m_pIoctlInfoSizer->Add(pFlexGridSize, 0, wxGROW | wxALL, 0);
 
 		m_pExtBoxSize2->Add(m_pIoctlInfoSizer, 0, wxGROW | wxALL, 5);
 		
@@ -1049,20 +1053,21 @@ void CDriverToolFrame::InitCollapsiblePane()
 
 		//
 		m_pStaticDeviceType = new wxStaticText(m_pExtSecondPanel, wxID_ANY, wxT("Device Type:"));
-		m_pFlexGridSizer->Add(m_pStaticDeviceType, wxSizerFlags().CenterVertical());
+		m_pFlexGridSizer->Add(m_pStaticDeviceType, wxSizerFlags().CenterVertical().Border());
 
 		m_pEdtDeviceType = new wxTextCtrl(m_pExtSecondPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
 		m_pFlexGridSizer->Add(m_pEdtDeviceType, wxSizerFlags(1).Expand().CenterVertical().Border());
 
 		m_pSpinDeviceType = new wxSpinButton(m_pExtSecondPanel, ID_SPIL_FUNCTION);
 		m_pSpinDeviceType->SetRange(0, 0xFFFF);
+		// m_pSpinDeviceType->SetValue(0xb);
 		m_pFlexGridSizer->Add(m_pSpinDeviceType, wxSizerFlags().CenterVertical());
 
 		//
-		m_vecSizerPointArray.push_back(pSizer);
+		// m_vecSizerPointArray.push_back(pSizer);
 
 		m_pStaticFunction = new wxStaticText(m_pExtSecondPanel, wxID_ANY, wxT("Function:"));
-		m_pFlexGridSizer->Add(m_pStaticFunction, wxSizerFlags(0).CenterVertical());
+		m_pFlexGridSizer->Add(m_pStaticFunction, wxSizerFlags(0).CenterVertical().Border());
 
 		m_pEdtFunction = new wxTextCtrl(m_pExtSecondPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
 		m_pFlexGridSizer->Add(m_pEdtFunction, wxSizerFlags(1).Expand().CenterVertical().Border());
@@ -1072,11 +1077,8 @@ void CDriverToolFrame::InitCollapsiblePane()
 		m_pFlexGridSizer->Add(m_pSpinFunction, wxSizerFlags(0).CenterVertical());
 		
 		
-
-		m_vecSizerPointArray.push_back(pSizer);
-
 		m_pStaticMethod = new wxStaticText(m_pExtSecondPanel, wxID_ANY, wxT("Method:"));
-		m_pFlexGridSizer->Add(m_pStaticMethod, wxSizerFlags().CenterVertical());
+		m_pFlexGridSizer->Add(m_pStaticMethod, wxSizerFlags().CenterVertical().Border());
 
 		m_pEdtMethod = new wxTextCtrl(m_pExtSecondPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
 		m_pFlexGridSizer->Add(m_pEdtMethod, wxSizerFlags(1).Expand().CenterVertical().Border());
@@ -1087,7 +1089,7 @@ void CDriverToolFrame::InitCollapsiblePane()
 
 		//
 		m_pStaticAccess = new wxStaticText(m_pExtSecondPanel, wxID_ANY, wxT("Access:"));
-		m_pFlexGridSizer->Add(m_pStaticAccess, wxSizerFlags().CenterVertical());
+		m_pFlexGridSizer->Add(m_pStaticAccess, wxSizerFlags().CenterVertical().Border());
 
 		m_pEdtAccess = new wxTextCtrl(m_pExtSecondPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
 		m_pFlexGridSizer->Add(m_pEdtAccess, wxSizerFlags(1).Expand().CenterVertical().Border());
@@ -1111,12 +1113,16 @@ void CDriverToolFrame::InitCollapsiblePane()
 		pSizer->Add(m_pEdtIoctlLayout, 0, wxGROW | wxALL, 0);
 
 		wxBitmap ioctlLayoutBitmap(wxBITMAP(IOCTL_LAYOUT));
-		m_pShowIoctlLayout = new wxStaticBitmap(m_pExtSecondPanel, wxID_ANY, ioctlLayoutBitmap);
+		m_pShowIoctlLayout = new wxGenericStaticBitmap(m_pExtSecondPanel, wxID_ANY, ioctlLayoutBitmap);
+		auto dpi = m_pShowIoctlLayout->GetDPI();
+		double lfDpiZoom = dpi.x * 1.0 / 96;
+		m_pShowIoctlLayout->SetMinSize(wxSize(228 * lfDpiZoom, 63 * lfDpiZoom));
+		m_pShowIoctlLayout->SetScaleMode(wxStaticBitmapBase::ScaleMode::Scale_AspectFit);
 		pSizer->Add(m_pShowIoctlLayout, 1, wxGROW | wxALL, 0);
 
 		//初始化Ioctl助记符
 		m_pIoctlControl = new CIoctlEdtControl(m_pEdtShowIoctlCode, m_pEdtMnemonic, m_pEdtDeviceType, m_pEdtFunction, m_pEdtMethod, m_pEdtAccess, m_pEdtIoctlLayout);
-		m_pEdtShowIoctlCode->SetLabelText(wxT("000B0000"));
+		// m_pEdtShowIoctlCode->SetValue(wxT("000B0000"));
 
 		wxString strTemp;
 		strTemp = wxString::Format(wxT("Recognizes %lu mnemonics"), m_pIoctlControl->GetMnemonicNumber());
@@ -1138,7 +1144,7 @@ void CDriverToolFrame::InitCollapsiblePane()
 		m_pExtBoxSizer3 = new wxBoxSizer(wxVERTICAL);
 
 		m_pBottomStaticBoxSizer = new wxStaticBoxSizer(wxVERTICAL, m_pExtThirdPanel, wxT("附加设备(非WDM驱动勿选)"));
-		m_pCheckBoxSizer = new wxGridSizer(0, 5, 0, 0);
+		m_pCheckBoxSizer = new wxGridSizer(0, 4, 0, 0);
 		m_pBottomStaticBoxSizer->Add(m_pCheckBoxSizer, 1, wxALL | wxEXPAND, 5);
 		m_pExtBoxSizer3->Add(m_pBottomStaticBoxSizer, 1, wxALL | wxEXPAND, 5);
 
@@ -1159,7 +1165,7 @@ void CDriverToolFrame::InitCollapsiblePane()
 	pMainPanel->SetSizer(m_pExtenPanelMainBoxSizer);
 	m_pExtenPanelMainBoxSizer->SetSizeHints(pMainPanel);
 
-	m_pMainBoxSizer->Add(m_pCollapsibleSizer);
+	m_pMainBoxSizer->Add(m_pCollapsibleSizer, 0, wxEXPAND);
 }
 
 void CDriverToolFrame::InitWDMFilterData()
@@ -1375,7 +1381,7 @@ void CDriverToolFrame::UpdateIoctlInfo(IOCTL_INFO & ioctlInfo)
 void CDriverToolFrame::NotifyExtFrame()
 {
 	wxString szPath;
-	szPath = m_pEdtDriverPath->GetLabelText();
+	szPath = m_pEdtDriverPath->GetValue();
 	CServiceControl sc;
 	m_szServiceName = sc.FindServiceName(szPath.c_str());
 	UpdateDriverInfo();
@@ -1442,7 +1448,7 @@ bool CDriverToolFrame::FileCopyToDriverFolder(wxString & strFileName)
 void CDriverToolFrame::OnAddMinifilterSupport(wxCommandEvent & event)
 {
 	CServiceControl sc;
-	sc.SetPath(m_pEdtDriverPath->GetLabelText());
+	sc.SetPath(m_pEdtDriverPath->GetValue());
 	if (sc.MinifilterSupport() < 0)
 	{
 		SetStatusText(wxT("添加miniFilter支持失败"));

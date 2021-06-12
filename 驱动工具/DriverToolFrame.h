@@ -5,6 +5,7 @@
 #include <wx\\notebook.h>
 #include <wx\\spinbutt.h>
 #include <wx\\activityindicator.h>
+#include <wx/generic/statbmpg.h>
 
 
 enum 
@@ -153,7 +154,7 @@ private:
 	wxSpinButton *m_pSpinAccess;
 
 	wxTextCtrl *m_pEdtIoctlLayout;
-	wxStaticBitmap *m_pShowIoctlLayout;
+	wxGenericStaticBitmap*m_pShowIoctlLayout;
 
 	//ThirdPanel
 	wxPanel *m_pExtThirdPanel;

@@ -452,8 +452,8 @@ void CIoctlEdtControl::MnemonicSet(const wxString & strMnemonic)
 		auto iter = m_mapMnemonicToCode.find(newStr);
 		if (iter == m_mapMnemonicToCode.cend())
 		{
-			IOCTL_INFO ioctlInfo = { 0 };
-			UpdateIoctlInfo(ioctlInfo);
+			// IOCTL_INFO ioctlInfo = { 0 };
+			// UpdateIoctlInfo(ioctlInfo);
 		}
 		else
 		{
@@ -466,93 +466,97 @@ void CIoctlEdtControl::MnemonicSet(const wxString & strMnemonic)
 
 void CIoctlEdtControl::GetIoctlInfo(IOCTL_INFO & ioctlInfo)
 {
-	wxString strCode = m_pEdtCode->GetLabelText();
-	_tcscanf_s(strCode.c_str(), TEXT("%x"), &ioctlInfo.ulData);
+	wxString strCode = m_pEdtCode->GetValue();
+	wchar_t* pEnd = nullptr;
+	ioctlInfo.ulData = (ULONG)_tcstoi64(strCode.c_str(), &pEnd, 16);
 }
 
 void CIoctlEdtControl::UpdateIoctlInfo(const IOCTL_INFO & ioctlInfo)
 {
 	do 
 	{
-		if (ioctlInfo.ulData == 0)
-		{
-			m_pEdtMnemonic->SetLabelText(wxT(""));
-			m_pEdtDevType->SetLabelText(wxT(""));
-			m_pEdtFunction->SetLabelText(wxT(""));
-			m_pEdtMethod->SetLabelText(wxT(""));
-			m_pEdtAccess->SetLabelText(wxT(""));
-			m_pEdtLayout->SetLabelText(wxT(""));
-			//m_pEdtCode->SetInsertionPoint(-1);
-			m_pEdtLayout->SetLabelText(wxT("00000000000000000000000000000000"));
-			break;;
-		}
+		// if (ioctlInfo.ulData == 0)
+		// {
+		// 	// m_pEdtMnemonic->SetValue(wxT(""));
+		// 	// m_pEdtDevType->SetValue(wxT(""));
+		// 	// m_pEdtFunction->SetValue(wxT(""));
+		// 	// m_pEdtMethod->SetValue(wxT(""));
+		// 	// m_pEdtAccess->SetValue(wxT(""));
+		// 	// m_pEdtLayout->SetValue(wxT(""));
+		// 	// //m_pEdtCode->SetInsertionPoint(-1);
+		// 	// m_pEdtLayout->SetValue(wxT("00000000000000000000000000000000"));
+		// 
+		// 
+		// 	break;;
+		// }
 
+		
 		wxString strTemp;
-		strTemp = wxString::Format(wxT("%08X"), ioctlInfo.ulData);
+		strTemp = wxString::Format(wxT("%X"), ioctlInfo.ulData);
 		long lastInsertPos = m_pEdtCode->GetInsertionPoint();
-		m_pEdtCode->SetLabelText(strTemp);
+		m_pEdtCode->SetValue(strTemp);
 		m_pEdtCode->SetInsertionPoint(lastInsertPos);
 
 		//DeviceType
 		auto p1 = m_mapDeviceType.find(ioctlInfo.Info.DeviceType);
 		if (p1 != m_mapDeviceType.end())
 		{
-			m_pEdtDevType->SetLabelText(p1->second);
+			m_pEdtDevType->SetValue(p1->second);
 		}
 		else
 		{
-			m_pEdtDevType->SetLabelText(wxT(""));
+			m_pEdtDevType->SetValue(wxT(""));
 		}
 
 		//Function
 		strTemp = wxString::Format(wxT("0x%X"), ioctlInfo.Info.Function);
-		m_pEdtFunction->SetLabelText(strTemp);
+		m_pEdtFunction->SetValue(strTemp);
 
 		//Method
 		auto p2 = m_mapMethod.find(ioctlInfo.Info.Method);
 		if (p2 != m_mapMethod.end())
 		{
-			m_pEdtMethod->SetLabelText(p2->second);
+			m_pEdtMethod->SetValue(p2->second);
 		}
 		else
 		{
-			m_pEdtMethod->SetLabelText(wxT(""));
+			m_pEdtMethod->SetValue(wxT(""));
 		}
 
 		//Access
 		auto p3 = m_mapAccess.find(ioctlInfo.Info.Access);
 		if (p3 != m_mapAccess.end())
 		{
-			m_pEdtAccess->SetLabelText(p3->second);
+			m_pEdtAccess->SetValue(p3->second);
 		}
 		else
 		{
-			m_pEdtAccess->SetLabelText(wxT(""));
+			m_pEdtAccess->SetValue(wxT(""));
 		}
 
 		//DeviceType
 		auto p4 = m_mapDeviceType.find(ioctlInfo.Info.DeviceType);
 		if (p4 != m_mapDeviceType.end())
 		{
-			m_pEdtDevType->SetLabelText(p4->second);
+			m_pEdtDevType->SetValue(p4->second);
 		}
 		else
 		{
-			m_pEdtDevType->SetLabelText(wxT("0"));
+			m_pEdtDevType->SetValue(wxT("0"));
 		}
 
 		//Mnemonic
 		auto p5 = m_mapCodeAndMnemonic.find(ioctlInfo.ulData);
 		if (p5 != m_mapCodeAndMnemonic.end())
 		{
-			m_pEdtMnemonic->SetLabelText(p5->second);
+			m_pEdtMnemonic->SetValue(p5->second);
 		}
 		else
 		{
-			m_pEdtMnemonic->SetLabelText(wxT(""));
+			m_pEdtMnemonic->SetValue(wxT(""));
 		}
 		std::bitset<32> bitData(ioctlInfo.ulData);
-		m_pEdtLayout->SetLabelText(bitData.to_string());
+		m_pEdtLayout->SetValue(bitData.to_string());
 	} while (0);
 	
 }
