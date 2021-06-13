@@ -20,7 +20,11 @@ CServiceControl::~CServiceControl()
 void CServiceControl::SetPath(const TCHAR * filePath)
 {
 	_tcscpy_s(m_filePath, filePath);
-	_tcscpy_s(m_serviceName, FindServiceName(m_filePath));
+	auto strServiceName = FindServiceName(m_filePath);
+	if (strServiceName != nullptr)
+	{
+		_tcscpy_s(m_serviceName, strServiceName);
+	}
 }
 
 BOOL CServiceControl::InstallService()

@@ -21,7 +21,7 @@ wxThread::ExitCode CControlWorkerThread::Entry()
 	//m_pFrame->DisableAllButton();
 	do
 	{
-		wxString strFile = m_pFrame->m_pEdtDriverPath->GetLabelText();
+		wxString strFile = m_pFrame->m_pEdtDriverPath->GetValue();
 		CServiceControl sc;
 		sc.SetPath(strFile.c_str().AsWCharBuf().data());
 
